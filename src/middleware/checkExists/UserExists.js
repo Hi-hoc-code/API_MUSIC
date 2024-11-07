@@ -1,18 +1,14 @@
-const validateUserRegister = (req, res, next) => {
-    const { username, email, password } = req.body;
-    if (!username || !email || !password) {
-        return res.status(400).json({ message: "Vui lòng nhập đủ thông tin" })
+const User = require("../../model/User");
+
+const check_user_exists = async (req, res, next) => {
+    const { username, email } = req.body;
+    const existsUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existsUser) {
+        return res.status(400).json({ message: 'Tài khoản đã tồn tại' });
     }
     next();
-}
-const validateUserLogin = (req, res, next) => {
-    const { username, password } = req.body;
-    if (!username || !password) {
-        return res.status(400).json({ message: "Vui lòng nhập đủ thông tin" })
-    }
-    next();
-}
+};
+
 module.exports = {
-    validateUserRegister,
-    validateUserLogin
+    check_user_exists
 }

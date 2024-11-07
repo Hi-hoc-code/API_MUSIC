@@ -28,7 +28,7 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { username, password } = req.query;
         const user = await User.findOne({ username });
         if (!user) {
             return res.status(404).json({ message: "User not found!" });
@@ -46,7 +46,7 @@ const login = async (req, res) => {
 
 const get_otp = async (req, res) => {
     try {
-        const { email } = req.body;
+        const {email} = req.body;
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại!" });
@@ -123,12 +123,12 @@ const reset_password = async (req, res) => {
 };
 const up_avatar = async (req, res) => {
     try {
-        const { id } = req.params; // Sử dụng `req.params` để lấy ID từ URL
+        const { id } = req.params;
         const user = await User.findById(id)
+        console.log(user)
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại!" });
         }
-        // Kiểm tra nếu tệp hình ảnh không được gửi lên
         if (!req.file || !req.file.path) {
             return res.status(400).json({ message: "Tệp hình ảnh không được tìm thấy." });
         }
@@ -145,7 +145,7 @@ const up_avatar = async (req, res) => {
 
 
 const up_premium = async (req, res) => {
-
+    res.json({ message: "Updating funtion" })
 };
 const payment = async (req, res) => {
     var accessKey = 'F8BBA842ECF85';
