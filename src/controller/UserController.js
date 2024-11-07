@@ -121,6 +121,7 @@ const reset_password = async (req, res) => {
         console.error(error);
     }
 };
+
 const up_avatar = async (req, res) => {
     try {
         const { id } = req.params;
