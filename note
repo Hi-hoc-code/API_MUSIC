@@ -1,0 +1,6 @@
+;  Sử Dụng Trong API RESTful
+;     200 OK: Trả về dữ liệu khi truy vấn (GET).
+;     201 Created: Khi tạo mới một tài nguyên thành công (POST).
+;     204 No Content: Xóa tài nguyên thành công (DELETE).
+;     400 Bad Request: Dữ liệu yêu cầu không hợp lệ hoặc thiếu thông tin (POST, PUT).
+;     404 Not Found: Tài nguyên không tồn tại.

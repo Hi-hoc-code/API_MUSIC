@@ -29,7 +29,8 @@ const get_all_composer = async (req, res) => {
 
 const get_composer_by_id = async (req, res) => {
     try {
-        const composer = await Composer.findById(req.params.id);
+        const id_composer = req.body
+        const composer = await Composer.findById(id_composer);
         if (!composer) return res.status(404).json({ message: "Không thấy thông tin nghệ sĩ" });
         res.status(200).json(composer);
     } catch (error) {
@@ -39,7 +40,7 @@ const get_composer_by_id = async (req, res) => {
 
 const update_composer = async (req, res) => {
     try {
-        const id_composer = req.params.id;
+        const id_composer = req.body.id;
         const updatedComposer = await Composer.findByIdAndUpdate(id_composer, req.body, { new: true });
         if (!updatedComposer) {
             return res.status(404).json({ message: "Không thấy nghệ sĩ" });
@@ -55,7 +56,7 @@ const update_composer = async (req, res) => {
 
 const delete_composer = async (req, res) => {
     try {
-        const id_composer = req.params.id;
+        const id_composer = req.body.id;
         const deletedComposer = await Composer.findByIdAndDelete(id_composer);
         if (!deletedComposer) {
             return res.status(404).json({ message: "Không thấy nghệ sĩ" });
@@ -68,7 +69,7 @@ const delete_composer = async (req, res) => {
 
 const up_img_composer = async (req, res) => {
     try {
-        const id_composer = req.params.id;
+        const id_composer = req.body.id;
         const composer = await Composer.findById(id_composer); F
         if (!composer) {
             return res.status(404).json({ message: "Không thấy nghệ sĩ" });

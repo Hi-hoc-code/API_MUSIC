@@ -11,7 +11,7 @@ router.post('/forgot_password', forgot_password);
 router.post('/reset_password', reset_password);
 router.post('/get_otp', get_otp);
 router.put('/upPremium', up_premium);
-router.put('/upAvatar/:id', upload.single('image'), up_avatar);
+router.put('/upAvatar', upload.single('image'), up_avatar);
 router.post('/payment', payment);
 
 module.exports = router

@@ -28,7 +28,7 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        const { username, password } = req.query;
+        const { username, password } = req.body;
         const user = await User.findOne({ username });
         if (!user) {
             return res.status(404).json({ message: "User not found!" });
@@ -46,7 +46,7 @@ const login = async (req, res) => {
 
 const get_otp = async (req, res) => {
     try {
-        const {email} = req.body;
+        const { email } = req.body;
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại!" });
@@ -58,25 +58,20 @@ const get_otp = async (req, res) => {
         console.error(error);
     }
 };
-// opt: { type: String, default: '' },
-// optDate: { type: Date },
 const forgot_password = async (req, res) => {
     try {
-        const { email } = req.body;
+        const { email } = req.params;
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: "Email không tồn tại!" });
         }
-        // Tạo mã OTP và thiết lập thời gian hết hạn là 30 giây
         const otp = crypto.randomInt(100000, 999999);
-        const otpDate = Date.now() + 30 * 1000; // 30 giây
+        const otpDate = Date.now() + 30 * 1000; 
 
         user.otp = otp;
+        console.log("otp được gửi đến gmail: ", otp)
         user.otpDate = otpDate;
         await user.save();
-
-        console.log(user)
-        // Gửi email OTP
         await transporter.sendMail({
             to: email,
             subject: "Password Reset OTP",
@@ -85,7 +80,7 @@ const forgot_password = async (req, res) => {
 
         res.json({ message: "Mã OTP đã được gửi đến email!" });
 
-        // Tự động xoá OTP sau 30 giây
+      
         setTimeout(async () => {
             const userWithOtp = await User.findOne({ email });
             if (userWithOtp && userWithOtp.otpExpires <= Date.now()) {
@@ -99,7 +94,6 @@ const forgot_password = async (req, res) => {
         console.error(error);
     }
 };
-
 
 const reset_password = async (req, res) => {
     try {
@@ -124,7 +118,7 @@ const reset_password = async (req, res) => {
 
 const up_avatar = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id } = req.body;
         const user = await User.findById(id)
         console.log(user)
         if (!user) {
@@ -133,10 +127,8 @@ const up_avatar = async (req, res) => {
         if (!req.file || !req.file.path) {
             return res.status(400).json({ message: "Tệp hình ảnh không được tìm thấy." });
         }
-        // Cập nhật hình ảnh cho người dùng
         user.imgUser = req.file.path;
         await user.save()
-        // Trả về thông tin người dùng sau khi cập nhật hình ảnh
         res.json({ message: "Cập nhật hình ảnh thành công!", imgUser: user.imgUser })
     } catch (error) {
         res.status(500).json({ message: "Đã xảy ra lỗi khi cập nhật hình ảnh." });

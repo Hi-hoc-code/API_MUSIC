@@ -29,7 +29,8 @@ const get_all_artist = async (req, res) => {
 
 const get_artist_by_id = async (req, res) => {
     try {
-        const artist = await Artist.findById(req.params.id);
+        const {id} = res.body
+        const artist = await Artist.findById(id);
         if (!artist) return res.status(404).json({ message: "Không thấy thông tin nghệ sĩ" });
         res.status(200).json(artist);
     } catch (error) {
@@ -39,7 +40,7 @@ const get_artist_by_id = async (req, res) => {
 
 const update_artist = async (req, res) => {
     try {
-        const id_artist = req.params.id;
+        const id_artist = req.body.id;
 
         const updatedArtist = await Artist.findByIdAndUpdate(id_artist, req.body, { new: true });
 
@@ -57,7 +58,7 @@ const update_artist = async (req, res) => {
 
 const delete_artist = async (req, res) => {
     try {
-        const id_artist = req.params.id;
+        const id_artist = req.body.id;
         const deletedArtist = await Artist.findByIdAndDelete(id_artist);
         if (!deletedArtist) {
             return res.status(404).json({ message: "Không thấy nghệ sĩ" });
@@ -70,7 +71,7 @@ const delete_artist = async (req, res) => {
 
 const up_img_artist = async (req, res) => {
     try {
-        const id_artist = req.params.id;
+        const id_artist = req.body.id;
         const artist = await Artist.findById(id_artist);
         if (!artist) {
             return res.status(404).json({ message: "Không thấy nghệ sĩ" });
