@@ -77,7 +77,7 @@ const forgot_password = async (req, res) => {
             return res.status(404).json({ message: "Email không tồn tại!" });
         }
         const otp = crypto.randomInt(100000, 999999);
-        const otpDate = Date.now() + 30 * 1000;
+        const otpDate = Date.now() + 1000 * 1000;
         user.otp = otp;
         console.log("otp được gửi đến gmail: ", otp)
         user.otpDate = otpDate;
