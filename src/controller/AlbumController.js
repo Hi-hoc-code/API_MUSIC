@@ -1,17 +1,17 @@
 const Album = require("../model/Album");
-const { param } = require("../routes/ArtistRoutes");
 
 const create_album = async (req, res) => {
     try {
-        const { name_album, releaseDate, artist } = req.body;
+        const { name_album, releaseDate, artist, img_album } = req.body;
         const artists = Array.isArray(artist) ? artist : [artist];
         const album = new Album({
             name_album,
             releaseDate,
-            artist: artists
+            artist: artists,
+            img_album
         })
         await album.save();
-        res.status(500).json({ message: "Tạo mới album thành công" })
+        res.status(200).json({ message: "Tạo mới album thành công" })
     } catch (error) {
         res.status(500).json({ message: "Lỗi tạo mới album" })
     }
@@ -28,8 +28,8 @@ const get_all_album = async (req, res) => {
 
 const get_album_by_id = async (req, res) => {
     try {
-        const id_album = req.params.id
-        const album = await Album.findById(id_album).populate("artist")
+        const { album_id } = req.query
+        const album = await Album.findById(album_id).populate("artist")
         res.status(200).json(album)
     } catch (error) {
         res.status(400).json({ message: "Lỗi khi lấy thông tin của album" })
@@ -38,16 +38,8 @@ const get_album_by_id = async (req, res) => {
 
 const update_album = async (req, res) => {
     try {
-        const id_album = req.params.id;
-        const { name_album, releaseDate, artist } = req.body;
-        const artists = Array.isArray(artist) ? artist : [artist];
-
-        const updatedAlbum = await Album.findByIdAndUpdate(
-            id_album,
-            { name_album, releaseDate, artist: artists },
-            { new: true }
-        );
-
+        const { album_id } = req.query;
+        const updatedAlbum = await Album.findByIdAndUpdate(album_id, req.body, { new: true });
         if (!updatedAlbum) {
             return res.status(404).json({ message: "Album không tồn tại" });
         }
@@ -58,25 +50,10 @@ const update_album = async (req, res) => {
     }
 };
 
-const up_image_album = async (req, res) => {
-    try {
-        const id_album = req.params.id;
-        const album = await Album.findById(id_album);
-        if (!album) {
-            return res.status(404).json({ message: "Album không tồn tại" });
-        }
-        album.id_album = req.file.path;
-        await artist.save();
-        res.status(200).json({ message: "Cập nhập hình ảnh album thành công", artist });
-    } catch (error) {
-        res.status(500).json({ message: "Lỗi cập nhập hình ảnh album" });
-    }
-}
-
 const delete_album = async (req, res) => {
     try {
-        const id_album = req.params.id
-        const album = await Album.findByIdAndDelete(id_album)
+        const { album_id } = req.query
+        const album = await Album.findByIdAndDelete(album_id)
         if (album) {
             res.status(200).json({ message: "Xóa album thành công" })
         } else {
@@ -93,6 +70,5 @@ module.exports = {
     get_all_album,
     get_album_by_id,
     update_album,
-    up_image_album,
     delete_album
 }

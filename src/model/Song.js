@@ -2,15 +2,16 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const Song = new Schema({
-    nameSong: String,
-    imgSong: String,
+    name_song: String,
+    img_song: String,
     audio: String,
     artist: [{ type: Schema.Types.ObjectId, ref: 'Artist' }],
     composer: [{ type: Schema.Types.ObjectId, ref: 'Composer' }],
     genre: [{ type: Schema.Types.ObjectId, ref: 'Genre' }],
-    album: { type: Schema.Types.ObjectId, ref: 'Album' },
-    releaseDate: Date,
-    duration: Number,
+    playlist: [{ type: Schema.Types.ObjectId, ref: 'Playlist' }],
+    album: [{ type: Schema.Types.ObjectId, ref: 'Album' }],
+    releaseYear: Number,
+    duration: String,
     view: { type: Number, default: 0 }
 });
 

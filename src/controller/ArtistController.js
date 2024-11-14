@@ -2,14 +2,18 @@ const Artist = require('../model/Artist')
 
 const create_artist = async (req, res) => {
     try {
-        const { name_artist, bio_artist } = req.body
+        const { name_artist, bio_artist, img_artist } = req.body
+        console.log(req.body)
+
         const artist = new Artist({
             name_artist,
-            bio_artist
+            bio_artist,
+            img_artist
         })
         await artist.save()
         res.status(200).json({
-            message: "Tạo Artist thành công"
+            message: "Tạo Artist thành công",
+            artist
         })
     } catch (error) {
         res.status(500).json({
@@ -29,8 +33,8 @@ const get_all_artist = async (req, res) => {
 
 const get_artist_by_id = async (req, res) => {
     try {
-        const {id} = res.body
-        const artist = await Artist.findById(id);
+        const { artist_id } = req.query
+        const artist = await Artist.findById(artist_id);
         if (!artist) return res.status(404).json({ message: "Không thấy thông tin nghệ sĩ" });
         res.status(200).json(artist);
     } catch (error) {
@@ -40,17 +44,24 @@ const get_artist_by_id = async (req, res) => {
 
 const update_artist = async (req, res) => {
     try {
-        const id_artist = req.body.id;
-
-        const updatedArtist = await Artist.findByIdAndUpdate(id_artist, req.body, { new: true });
-
+        const { artist_id } = req.query;
+        const updatedArtist = await Artist.findByIdAndUpdate(artist_id, req.body, { new: true });
         if (!updatedArtist) {
             return res.status(404).json({ message: "Không thấy nghệ sĩ" });
         }
+
         res.status(200).json({
             message: "Thay đổi thông tin nghệ sĩ thành công",
             updatedArtist
         });
+        const updatedAlbums = await Album.updateMany(
+            { "artists": artist_id },
+            { $set: { "artists.$[elem].img_artist": artist.img_artist } },
+            { arrayFilters: [{ "elem._id": artist_id }] }
+        );
+        if (!updatedAlbums) {
+            res.status(400).json({ message: "Không thể cập nhập nghệ sĩ vào album" });
+        }
     } catch (error) {
         res.status(500).json({ message: "Không thể cập nhập nghệ sĩ" });
     }
@@ -58,32 +69,24 @@ const update_artist = async (req, res) => {
 
 const delete_artist = async (req, res) => {
     try {
-        const id_artist = req.body.id;
-        const deletedArtist = await Artist.findByIdAndDelete(id_artist);
+        const { artist_id } = req.query;
+        const deletedArtist = await Artist.findByIdAndDelete(artist_id);
         if (!deletedArtist) {
             return res.status(404).json({ message: "Không thấy nghệ sĩ" });
         }
         res.status(200).json({ message: "Xóa nghệ sĩ thành công" });
+        const updatedAlbums = await Album.updateMany(
+            { "artists": artist_id },
+            { $set: { "artists.$[elem].img_artist": artist.img_artist } },
+            { arrayFilters: [{ "elem._id": artist_id }] }
+        );
+        if (!updatedAlbums) {
+            res.status(400).json({ message: "Không thể cập nhập nghệ sĩ vào album" });
+        }
     } catch (error) {
         res.status(500).json({ message: "Không thể xóa nghệ sĩ" });
     }
 };
-
-const up_img_artist = async (req, res) => {
-    try {
-        const id_artist = req.body.id;
-        const artist = await Artist.findById(id_artist);
-        if (!artist) {
-            return res.status(404).json({ message: "Không thấy nghệ sĩ" });
-        }
-        artist.img_artist = req.file.path;
-        await artist.save();
-        res.status(200).json({ message: "Cập nhập hình ảnh nghệ sĩ thành công", artist });
-    } catch (error) {
-        res.status(500).json({ message: "Lỗi cập nhập hình ảnh nghệ sĩ" });
-    }
-};
-
 
 module.exports = {
     create_artist,
@@ -91,5 +94,4 @@ module.exports = {
     get_artist_by_id,
     update_artist,
     delete_artist,
-    up_img_artist
 }

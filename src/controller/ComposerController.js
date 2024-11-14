@@ -2,10 +2,12 @@ const Composer = require("../model/Composer");
 
 const create_composer = async (req, res) => {
     try {
-        const { name_composer, bio_composer } = req.body;
+        const { name_composer, bio_composer, img_composer } = req.body;
+        console.log(req.body)
         const composer = new Composer({
             name_composer,
-            bio_composer
+            bio_composer,
+            img_composer
         });
         await composer.save();
         res.status(200).json({
@@ -29,8 +31,9 @@ const get_all_composer = async (req, res) => {
 
 const get_composer_by_id = async (req, res) => {
     try {
-        const id_composer = req.body
-        const composer = await Composer.findById(id_composer);
+        const { id_composer } = req.query
+        const composer = await Composer.findById(id_composer)
+        console.log(composer)
         if (!composer) return res.status(404).json({ message: "Không thấy thông tin nghệ sĩ" });
         res.status(200).json(composer);
     } catch (error) {
@@ -40,7 +43,7 @@ const get_composer_by_id = async (req, res) => {
 
 const update_composer = async (req, res) => {
     try {
-        const id_composer = req.body.id;
+        const { id_composer } = req.query;
         const updatedComposer = await Composer.findByIdAndUpdate(id_composer, req.body, { new: true });
         if (!updatedComposer) {
             return res.status(404).json({ message: "Không thấy nghệ sĩ" });
@@ -56,31 +59,20 @@ const update_composer = async (req, res) => {
 
 const delete_composer = async (req, res) => {
     try {
-        const id_composer = req.body.id;
-        const deletedComposer = await Composer.findByIdAndDelete(id_composer);
-        if (!deletedComposer) {
+        const { id_composer } = req.query
+
+        const deleteComposer = await Composer.findByIdAndDelete(id_composer)
+        console.log(deleteComposer)
+        if (!deleteComposer) {
             return res.status(404).json({ message: "Không thấy nghệ sĩ" });
-        }F
+        }
         res.status(200).json({ message: "Xóa nghệ sĩ thành công" });
     } catch (error) {
         res.status(500).json({ message: "Không thể xóa nghệ sĩ" });
     }
 };
 
-const up_img_composer = async (req, res) => {
-    try {
-        const id_composer = req.body.id;
-        const composer = await Composer.findById(id_composer); F
-        if (!composer) {
-            return res.status(404).json({ message: "Không thấy nghệ sĩ" });
-        }
-        composer.img_composer = req.file.path;
-        await composer.save();
-        res.status(200).json({ message: "Cập nhập hình ảnh nghệ sĩ thành công", composer });
-    } catch (error) {
-        res.status(500).json({ message: "Lỗi cập nhập hình ảnh nghệ sĩ" });
-    }
-};
+
 
 module.exports = {
     create_composer,
@@ -88,5 +80,4 @@ module.exports = {
     get_composer_by_id,
     update_composer,
     delete_composer,
-    up_img_composer
 };

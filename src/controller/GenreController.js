@@ -2,10 +2,11 @@ const Genre = require('../../src/model/Genre');
 
 const create_genre = async (req, res) => {
     try {
-        const { name_genre, description_genre } = req.body;
+        const { name_genre, description_genre , img_genre} = req.body;
         const new_genre = new Genre({
             name_genre,
-            description_genre
+            description_genre,
+            img_genre
         });
         await new_genre.save();
         res.status(201).json({ message: "Tạo mới genre thành công" });
@@ -25,8 +26,8 @@ const get_all_genre = async (req, res) => {
 
 const get_genre_by_id = async (req, res) => {
     try {
-        const { id } = req.params;
-        const genre = await Genre.findById(id);
+        const { genre_id } = req.query;
+        const genre = await Genre.findById(genre_id);
 
         if (!genre) {
             return res.status(404).json({ message: "Không tìm thấy genre" });
@@ -43,7 +44,7 @@ const update_genre = async (req, res) => {
     try {
         const { id } = req.params;
         const genreUpdate = await Genre.findByIdAndUpdate(id, req.body, { new: true });
-        
+
         if (!genreUpdate) {
             return res.status(404).json({ message: "Không thấy genre" });
         }
@@ -60,28 +61,12 @@ const update_genre = async (req, res) => {
     }
 };
 
-const up_image_genre = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const genre = await Genre.findById(id);
 
-        if (!genre) {
-            return res.status(404).json({ message: "Không thấy genre" });
-        }
-
-        genre.img_genre = req.file.path;
-
-        await genre.save();
-        res.status(200).json({ message: "Cập nhật hình ảnh genre thành công", genre });
-    } catch (error) {
-        res.status(500).json({ message: "Lỗi cập nhật hình ảnh genre" });
-    }
-};
 
 const delete_genre = async (req, res) => {
     try {
-        const { id } = req.params;
-        const genre = await Genre.findByIdAndDelete(id);
+        const { genre_id } = req.query
+        const genre = await Genre.findByIdAndDelete(genre_id)
         if (!genre) {
             return res.status(404).json({ message: "Không tìm thấy genre" });
         }
@@ -93,14 +78,10 @@ const delete_genre = async (req, res) => {
     }
 };
 
-
-
 module.exports = {
     create_genre,
     get_all_genre,
     get_genre_by_id,
     delete_genre,
-    up_image_genre,
     update_genre
-
 };

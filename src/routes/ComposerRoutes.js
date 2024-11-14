@@ -4,14 +4,16 @@ const {
     create_composer,
     get_all_composer,
     get_composer_by_id,
-    update_composer, up_img_composer, delete_composer } = require('../controller/ComposerController');
-const upload = require('../middleware/multer');
+    update_composer,
+    delete_composer
+} = require('../controller/ComposerController');
+
+
 router.post('/create_composer', create_composer)
 router.get('/get_all_composer', get_all_composer)
-router.get('/get_composer_by_id/:id', get_composer_by_id)
-router.put('/update_composer/:id', update_composer)
-router.put('/up_img_composer/:id', upload.single('image'), up_img_composer)
-router.delete('/delete_composer/:id', delete_composer);
+router.post('/get_composer_by_id', get_composer_by_id)
+router.post('/update_composer', update_composer)
+router.post('/delete_composer', delete_composer);
 
 module.exports = router
 

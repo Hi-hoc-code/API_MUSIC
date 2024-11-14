@@ -17,10 +17,11 @@ const transporter = nodemailer.createTransport({
 const register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
+        console.log(req.body)
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({ username, email, password: hashedPassword });
         await newUser.save();
-        res.status(201).json({ message: "User registered successfully!" });
+        res.status(201).json({ message: "User registered successfully!", newUser });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -46,8 +47,8 @@ const login = async (req, res) => {
 
 const get_otp = async (req, res) => {
     try {
-        const { email } = req.body;
-        const user = await User.findOne({ email });
+        const { id } = req.query;
+        const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại!" });
         }
@@ -58,34 +59,32 @@ const get_otp = async (req, res) => {
         console.error(error);
     }
 };
+
 const forgot_password = async (req, res) => {
     try {
-        const { email } = req.params;
+        const { email } = req.query;
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: "Email không tồn tại!" });
         }
         const otp = crypto.randomInt(100000, 999999);
-        const otpDate = Date.now() + 30 * 1000; 
-
+        const otpDate = Date.now() + 30 * 1000;
         user.otp = otp;
         console.log("otp được gửi đến gmail: ", otp)
         user.otpDate = otpDate;
         await user.save();
         await transporter.sendMail({
-            to: email,
+            to: user.email,
             subject: "Password Reset OTP",
             text: `Mã OTP của bạn là ${otp}. Mã có hiệu lực trong 30 giây.`,
         });
-
         res.json({ message: "Mã OTP đã được gửi đến email!" });
-
-      
         setTimeout(async () => {
-            const userWithOtp = await User.findOne({ email });
-            if (userWithOtp && userWithOtp.otpExpires <= Date.now()) {
+            const userWithOtp = await User.findById(id);
+            console.log(userWithOtp)
+            if (userWithOtp && userWithOtp.otpDate <= Date.now()) {
                 userWithOtp.otp = '';
-                userWithOtp.otpExpires = null;
+                userWithOtp.otpDate = null;
                 await userWithOtp.save();
             }
         }, 30 * 1000);
@@ -97,13 +96,11 @@ const forgot_password = async (req, res) => {
 
 const reset_password = async (req, res) => {
     try {
-        const { email, newPassword } = req.body;
-        const user = await User.findOne({ email });
-
+        const { id, newPassword } = req.body;
+        const user = await User.findById(id);
         if (!user) {
-            return res.status(404).json({ message: "Không tìm thấy người dùng với email này." });
+            return res.status(404).json({ message: "Không tìm thấy người dùng" });
         }
-
         user.password = await bcrypt.hash(newPassword, 10);
         user.otp = null;
         user.otpDate = null;
@@ -118,18 +115,15 @@ const reset_password = async (req, res) => {
 
 const up_avatar = async (req, res) => {
     try {
-        const { id } = req.body;
-        const user = await User.findById(id)
-        console.log(user)
+        const { id } = req.query;
+        const { imgUser } = req.body
+        const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại!" });
         }
-        if (!req.file || !req.file.path) {
-            return res.status(400).json({ message: "Tệp hình ảnh không được tìm thấy." });
-        }
-        user.imgUser = req.file.path;
-        await user.save()
-        res.json({ message: "Cập nhật hình ảnh thành công!", imgUser: user.imgUser })
+        user.imgUser = imgUser;
+        await user.save();
+        res.json({ message: "Cập nhật hình ảnh thành công!", imgUser: user.imgUser });
     } catch (error) {
         res.status(500).json({ message: "Đã xảy ra lỗi khi cập nhật hình ảnh." });
         console.error(error);
