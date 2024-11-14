@@ -56,7 +56,7 @@ const login = async (req, res) => {
 const get_otp = async (req, res) => {
     try {
         const { email } = req.query;
-        const user = await User.findOne(email);
+        const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại!" });
         }
