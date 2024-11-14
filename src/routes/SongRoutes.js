@@ -24,7 +24,7 @@ router.post('/update_song', update_song);
 router.post('/delete_song', delete_song);
 router.post('/search', get_song_search);
 router.post('/by_genre', get_song_by_genre);
-router.post('/by_album', get_song_by_album);
+router.get('/by_album', get_song_by_album);
 router.post('/by_artist', get_song_by_artist);
 router.post('/by_composer', get_song_by_composer);
 router.get('/get_song_by_trending', get_song_by_trending);
