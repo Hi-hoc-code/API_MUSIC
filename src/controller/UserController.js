@@ -45,6 +45,7 @@ const login = async (req, res) => {
     }
 };
 
+
 const get_otp = async (req, res) => {
     try {
         const { email } = req.query;
@@ -96,8 +97,8 @@ const forgot_password = async (req, res) => {
 
 const reset_password = async (req, res) => {
     try {
-        const { id, newPassword } = req.body;
-        const user = await User.findById(id);
+        const { email, newPassword } = req.body;
+        const user = await User.findOne(email);
         if (!user) {
             return res.status(404).json({ message: "Không tìm thấy người dùng" });
         }

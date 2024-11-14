@@ -12,6 +12,10 @@ const connectDB = require('./src/config/db');
 dotenv.config();
 const app = express();
 app.use(express.json());
+
+// Cấu hình view engine HBS
+app.set('view engine', 'hbs');
+app.set('views', './views');
 connectDB();
 
 app.use('/user', userRoutes)
