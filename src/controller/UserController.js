@@ -71,6 +71,7 @@ const get_otp = async (req, res) => {
 const forgot_password = async (req, res) => {
     try {
         const { email } = req.query;
+        console.log(req.body, typeof email)
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: "Email không tồn tại!" });
@@ -88,7 +89,7 @@ const forgot_password = async (req, res) => {
         });
         res.json({ message: "Mã OTP đã được gửi đến email!" });
         setTimeout(async () => {
-            const userWithOtp = await User.findOne(email);
+            const userWithOtp = await User.findOne({ email });
             console.log(userWithOtp)
             if (userWithOtp && userWithOtp.otpDate <= Date.now()) {
                 userWithOtp.otp = '';
