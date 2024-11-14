@@ -47,8 +47,8 @@ const login = async (req, res) => {
 
 const get_otp = async (req, res) => {
     try {
-        const { id } = req.query;
-        const user = await User.findById(id);
+        const { email } = req.query;
+        const user = await User.findById(email);
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại!" });
         }
