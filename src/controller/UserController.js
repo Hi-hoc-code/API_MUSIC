@@ -88,7 +88,7 @@ const forgot_password = async (req, res) => {
         });
         res.json({ message: "Mã OTP đã được gửi đến email!" });
         setTimeout(async () => {
-            const userWithOtp = await User.findById(id);
+            const userWithOtp = await User.findOne(email);
             console.log(userWithOtp)
             if (userWithOtp && userWithOtp.otpDate <= Date.now()) {
                 userWithOtp.otp = '';
