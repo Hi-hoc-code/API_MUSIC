@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-const { default: axios } = require('axios');
+const { default: axios, all } = require('axios');
 require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
@@ -13,7 +13,14 @@ const transporter = nodemailer.createTransport({
         pass: process.env.EMAIL_PASS,
     },
 });
-
+const get_all_user = async (req, res) => {
+    try {
+        const all_user = await User.find()
+        res.status(200).json(all_user)
+    } catch (error) {
+        res.status(400).json({ all_user })
+    }
+}
 const register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
@@ -206,5 +213,6 @@ module.exports = {
     up_premium,
     get_otp,
     up_avatar,
-    payment
+    payment,
+    get_all_user
 };

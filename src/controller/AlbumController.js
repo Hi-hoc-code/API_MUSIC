@@ -19,12 +19,13 @@ const create_album = async (req, res) => {
 
 const get_all_album = async (req, res) => {
     try {
-        const album = await Album.find().populate("artist");
-        res.status(200).json(album);
+        const albums = await Album.find().populate("artist");
+        res.render('album/list', { albums }); 
     } catch (error) {
         res.status(500).json({ message: "Lỗi không thể tìm thấy thông tin tất cả album" });
     }
-}
+};
+
 
 const get_album_by_id = async (req, res) => {
     try {
