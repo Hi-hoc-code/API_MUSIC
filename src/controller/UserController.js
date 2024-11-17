@@ -33,7 +33,6 @@ const register = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
 const login = async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -51,11 +50,9 @@ const login = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
-
 const get_otp = async (req, res) => {
     try {
-        const { email } = req.query;
+        const { email } = req.body;
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại!" });
@@ -67,17 +64,15 @@ const get_otp = async (req, res) => {
         console.error(error);
     }
 };
-
 const forgot_password = async (req, res) => {
     try {
         const { email } = req.query;
-        console.log(req.body, typeof email)
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: "Email không tồn tại!" });
         }
         const otp = crypto.randomInt(100000, 999999);
-        const otpDate = Date.now() + 1000 * 1000;
+        const otpDate = Date.now() + 30 * 1000;
         user.otp = otp;
         console.log("otp được gửi đến gmail: ", otp)
         user.otpDate = otpDate;
@@ -102,7 +97,6 @@ const forgot_password = async (req, res) => {
         console.error(error);
     }
 };
-
 const reset_password = async (req, res) => {
     try {
         const { email, newPassword } = req.body;
@@ -121,12 +115,10 @@ const reset_password = async (req, res) => {
         console.error(error);
     }
 };
-
 const up_avatar = async (req, res) => {
     try {
-        const { id } = req.query;
-        const { imgUser } = req.body
-        const user = await User.findById(id);
+        const { imgUser, idUser } = req.body
+        const user = await User.findById(idUser);
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại!" });
         }
@@ -138,7 +130,6 @@ const up_avatar = async (req, res) => {
         console.error(error);
     }
 };
-
 
 const up_premium = async (req, res) => {
     res.json({ message: "Updating funtion" })
@@ -205,7 +196,6 @@ const payment = async (req, res) => {
         });
     }
 };
-
 module.exports = {
     register,
     login,

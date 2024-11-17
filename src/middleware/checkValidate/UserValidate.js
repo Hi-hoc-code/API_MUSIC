@@ -5,6 +5,7 @@ const validate_user_register = (req, res, next) => {
     }
     next();
 }
+
 const validate_user_login = (req, res, next) => {
     const { username, password } = req.body;
     if (!username || !password) {

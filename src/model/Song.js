@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const Song = new Schema({
-    name_song: String,
-    img_song: String,
+    nameSong: String,
+    imgSong: String,
     audio: String,
     artist: [{ type: Schema.Types.ObjectId, ref: 'Artist' }],
     composer: [{ type: Schema.Types.ObjectId, ref: 'Composer' }],

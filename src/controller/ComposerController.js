@@ -2,12 +2,12 @@ const Composer = require("../model/Composer");
 
 const create_composer = async (req, res) => {
     try {
-        const { name_composer, bio_composer, img_composer } = req.body;
+        const { nameComposer, bioComposer, imgComposer } = req.body;
         console.log(req.body)
         const composer = new Composer({
-            name_composer,
-            bio_composer,
-            img_composer
+            nameComposer,
+            bioComposer,
+            imgComposer
         });
         await composer.save();
         res.status(200).json({
@@ -31,7 +31,7 @@ const get_all_composer = async (req, res) => {
 
 const get_composer_by_id = async (req, res) => {
     try {
-        const { id_composer } = req.query
+        const { id_composer } = req.body
         const composer = await Composer.findById(id_composer)
         console.log(composer)
         if (!composer) return res.status(404).json({ message: "Không thấy thông tin nghệ sĩ" });
@@ -43,7 +43,7 @@ const get_composer_by_id = async (req, res) => {
 
 const update_composer = async (req, res) => {
     try {
-        const { id_composer } = req.query;
+        const { id_composer } = req.body;
         const updatedComposer = await Composer.findByIdAndUpdate(id_composer, req.body, { new: true });
         if (!updatedComposer) {
             return res.status(404).json({ message: "Không thấy nghệ sĩ" });
@@ -59,7 +59,7 @@ const update_composer = async (req, res) => {
 
 const delete_composer = async (req, res) => {
     try {
-        const { id_composer } = req.query
+        const { id_composer } = req.body
 
         const deleteComposer = await Composer.findByIdAndDelete(id_composer)
         console.log(deleteComposer)

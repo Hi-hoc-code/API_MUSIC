@@ -26,7 +26,7 @@ const get_all_genre = async (req, res) => {
 
 const get_genre_by_id = async (req, res) => {
     try {
-        const { genre_id } = req.query;
+        const { genre_id } = req.body;
         const genre = await Genre.findById(genre_id);
 
         if (!genre) {
@@ -42,7 +42,7 @@ const get_genre_by_id = async (req, res) => {
 
 const update_genre = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id } = req.body;
         const genreUpdate = await Genre.findByIdAndUpdate(id, req.body, { new: true });
 
         if (!genreUpdate) {
@@ -65,7 +65,7 @@ const update_genre = async (req, res) => {
 
 const delete_genre = async (req, res) => {
     try {
-        const { genre_id } = req.query
+        const { genre_id } = req.body
         const genre = await Genre.findByIdAndDelete(genre_id)
         if (!genre) {
             return res.status(404).json({ message: "Không tìm thấy genre" });

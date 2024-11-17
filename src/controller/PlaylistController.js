@@ -5,8 +5,7 @@ const Song = require('../../src/model/Song');
 
 const create_playlist = async (req, res) => {
     try {
-        const { user_id } = req.query;
-        const { name_playlist } = req.body;
+        const { name_playlist, user_id } = req.body;
         const newPlaylist = await new Playlist({ user_id, name_playlist }).save();
         await User.findByIdAndUpdate(user_id, {
             $push: { playlist: newPlaylist._id }
@@ -22,7 +21,7 @@ const create_playlist = async (req, res) => {
 
 const get_all_playlist = async (req, res) => {
     try {
-        const { user_id } = req.query;
+        const { user_id } = req.body;
         if (!user_id) {
             return res.status(400).json({ message: "Vui lòng cung cấp user_id." });
         }
@@ -38,7 +37,7 @@ const get_all_playlist = async (req, res) => {
 };
 const get_playlist_by_id = async (req, res) => {
     try {
-        const { playlist_id } = req.query
+        const { playlist_id } = req.body
         if (!playlist_id) {
             return res.status(400).json({ message: "Lỗi khi lấy playlist" })
         }
@@ -51,7 +50,7 @@ const get_playlist_by_id = async (req, res) => {
 }
 const update_playlist = async (req, res) => {
     try {
-        const { playlist_id } = req.query;
+        const { playlist_id } = req.body;
         if (!playlist_id) {
             return res.status(400).json({ message: "Không nhận được id playlist" });
         }
@@ -68,7 +67,7 @@ const update_playlist = async (req, res) => {
 
 const delete_playlist = async (req, res) => {
     try {
-        const { playlist_id, user_id } = req.query;
+        const { playlist_id, user_id } = req.body;
         if (!playlist_id) {
             return res.status(400).json({ message: "Không nhận được id playlist." });
         }

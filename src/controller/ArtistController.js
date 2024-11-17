@@ -33,7 +33,7 @@ const get_all_artist = async (req, res) => {
 
 const get_artist_by_id = async (req, res) => {
     try {
-        const { artist_id } = req.query
+        const { artist_id } = req.body
         const artist = await Artist.findById(artist_id);
         if (!artist) return res.status(404).json({ message: "Không thấy thông tin nghệ sĩ" });
         res.status(200).json(artist);
@@ -44,7 +44,7 @@ const get_artist_by_id = async (req, res) => {
 
 const update_artist = async (req, res) => {
     try {
-        const { artist_id } = req.query;
+        const { artist_id } = req.body;
         const updatedArtist = await Artist.findByIdAndUpdate(artist_id, req.body, { new: true });
         if (!updatedArtist) {
             return res.status(404).json({ message: "Không thấy nghệ sĩ" });
@@ -69,7 +69,7 @@ const update_artist = async (req, res) => {
 
 const delete_artist = async (req, res) => {
     try {
-        const { artist_id } = req.query;
+        const { artist_id } = req.body;
         const deletedArtist = await Artist.findByIdAndDelete(artist_id);
         if (!deletedArtist) {
             return res.status(404).json({ message: "Không thấy nghệ sĩ" });

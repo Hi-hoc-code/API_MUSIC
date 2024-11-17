@@ -10,7 +10,6 @@ const { validate_album_create } = require('../middleware/checkValidate/AlbumVali
 const { check_album_exists } = require('../middleware/checkExists/AlbumExist');
 const router = express.Router();
 
-// router.get('/list', get_all_album); 
 router.post('/create_album', validate_album_create, check_album_exists, create_album)
 router.post('/get_all_album', get_all_album)
 router.post('/get_album_by_id', get_album_by_id)

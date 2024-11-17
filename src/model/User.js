@@ -7,9 +7,10 @@ const User = new Schema({
     password: { type: String, require: true },
     premium: { type: Boolean, default: false },
     otp: { type: Number },
+    // flagOTP 
     otpDate: { type: Date },
     playlist: [{ type: Schema.Types.ObjectId, ref: 'Playlist' }],
-    favoriteSong: [{ type: Schema.Types.ObjectId, ref: 'FavoriteSong' }],
+    favoriteSong: [{ type: Schema.Types.ObjectId, ref: 'Song' }],
     playlist: [{ type: Schema.Types.ObjectId, ref: 'Playlist' }],
     listenHistory: [{ type: Schema.Types.ObjectId, ref: 'ListenHistory' }],
     imgUser: { type: String, default: 'https://res.cloudinary.com/dmkyhh1cd/image/upload/v1730959543/image/huz2cjcvhv6a89qwls3l.jpg' }
