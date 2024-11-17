@@ -14,6 +14,6 @@ router.post('/create_genre', validate_genre_create, check_genre_exists, create_g
 router.post('/get_all_genre', get_all_genre);
 router.post('/get_genre_by_id', get_genre_by_id);
 router.post('/delete_genre', delete_genre)
-router.put('/update_genre', update_genre)
+router.post('/update_genre', update_genre)
 module.exports = router;
     

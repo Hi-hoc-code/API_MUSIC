@@ -2,13 +2,13 @@ const Artist = require('../model/Artist')
 
 const create_artist = async (req, res) => {
     try {
-        const { name_artist, bio_artist, img_artist } = req.body
+        const { nameArtist, bioArtist, imgArtist } = req.body
         console.log(req.body)
 
         const artist = new Artist({
-            name_artist,
-            bio_artist,
-            img_artist
+            nameArtist,
+            bioArtist,
+            imgArtist
         })
         await artist.save()
         res.status(200).json({
@@ -56,7 +56,7 @@ const update_artist = async (req, res) => {
         });
         const updatedAlbums = await Album.updateMany(
             { "artists": artist_id },
-            { $set: { "artists.$[elem].img_artist": artist.img_artist } },
+            { $set: { "artists.$[elem].imgArtist": artist.imgArtist } },
             { arrayFilters: [{ "elem._id": artist_id }] }
         );
         if (!updatedAlbums) {
@@ -77,7 +77,7 @@ const delete_artist = async (req, res) => {
         res.status(200).json({ message: "Xóa nghệ sĩ thành công" });
         const updatedAlbums = await Album.updateMany(
             { "artists": artist_id },
-            { $set: { "artists.$[elem].img_artist": artist.img_artist } },
+            { $set: { "artists.$[elem].imgArtist": artist.imgArtist } },
             { arrayFilters: [{ "elem._id": artist_id }] }
         );
         if (!updatedAlbums) {

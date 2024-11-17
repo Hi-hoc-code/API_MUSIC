@@ -32,8 +32,8 @@ const get_all_song = async (req, res) => {
 };
 const get_song_by_id = async (req, res) => {
     try {
-        const { id_song } = req.body;
-        const song = await Song.findById({ id_song })
+        const { idSong } = req.body;
+        const song = await Song.findById({ idSong })
             .populate({ path: 'artist', select: 'nameArtist' })
             .populate({ path: 'album', select: 'nameAlbum' })
             .populate({ path: 'genre', select: 'nameGenre' })
@@ -52,9 +52,9 @@ const get_song_by_id = async (req, res) => {
 }
 const update_song = async (req, res) => {
     try {
-        const { id_song, songData } = req.body;
+        const { idSong, songData } = req.body;
 
-        const updatedSong = await Song.findByIdAndUpdate(id_song, songData, { new: true });
+        const updatedSong = await Song.findByIdAndUpdate(idSong, songData, { new: true });
         if (!updatedSong) {
             return res.status(404).json({ message: "Không tìm thấy bài hát để cập nhật" });
         }
@@ -66,8 +66,8 @@ const update_song = async (req, res) => {
 };
 const delete_song = async (req, res) => {
     try {
-        const { id_song } = req.body
-        const deleteSong = await Song.findByIdAndDelete(id_song)
+        const { idSong } = req.body
+        const deleteSong = await Song.findByIdAndDelete(idSong)
         if (!deleteSong) {
             return res.status(400).json({ message: "Lỗi khi xóa bài hát" })
         }
@@ -82,15 +82,15 @@ const get_song_search = async (req, res) => {
         const songs = await Song.find({
             $or: [
                 { title: { $regex: keyword, $options: "i" } },
-                { "artist.name_artist": { $regex: keyword, $options: "i" } },
-                { "album.name_album": { $regex: keyword, $options: "i" } },
-                { "genre.name_genre": { $regex: keyword, $options: "i" } },
+                { "artist.nameArtist": { $regex: keyword, $options: "i" } },
+                { "album.nameAlbum": { $regex: keyword, $options: "i" } },
+                { "genre.nameGenre": { $regex: keyword, $options: "i" } },
                 { "composer.name_composer": { $regex: keyword, $options: "i" } }
             ]
         })
-            .populate({ path: 'artist', select: 'name_artist' })
-            .populate({ path: 'album', select: 'name_album' })
-            .populate({ path: 'genre', select: 'name_genre' })
+            .populate({ path: 'artist', select: 'nameArtist' })
+            .populate({ path: 'album', select: 'nameAlbum' })
+            .populate({ path: 'genre', select: 'nameGenre' })
             .populate({ path: 'composer', select: 'name_composer' });
 
         res.status(200).json({ songs });
@@ -104,9 +104,9 @@ const get_song_by_trending = async (req, res) => {
         const songs = await Song.find({ view: { $gt: 0 } })
             .sort({ view: -1 })
             .limit(10)
-            .populate({ path: 'artist', select: 'name_artist' })
-            .populate({ path: 'album', select: 'name_album' })
-            .populate({ path: 'genre', select: 'name_genre' })
+            .populate({ path: 'artist', select: 'nameArtist' })
+            .populate({ path: 'album', select: 'nameAlbum' })
+            .populate({ path: 'genre', select: 'nameGenre' })
             .populate({ path: 'composer', select: 'name_composer' });
 
         res.status(200).json({ songs });
@@ -115,7 +115,7 @@ const get_song_by_trending = async (req, res) => {
         console.error(error);
     }
 }
-const favorite_song_user_id = async (req, res) => {
+const favorite_song_idUser = async (req, res) => {
     try {
         const { userId, songId } = req.body;
         const user = await User.findById(userId);
@@ -136,7 +136,7 @@ const favorite_song_user_id = async (req, res) => {
         res.status(500).json({ message: "Lỗi khi thêm bài hát vào danh sách ưa thích", error: error.message });
     }
 }
-const remove_favorite_song_user_id = async (req, res) => {
+const remove_favorite_song_idUser = async (req, res) => {
     try {
         const { userId, songId } = req.body;
         const user = await User.findById(userId);
@@ -163,5 +163,5 @@ module.exports = {
     delete_song,
     get_song_search,
     get_song_by_trending,
-    favorite_song_user_id
+    favorite_song_idUser
 }

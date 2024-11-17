@@ -2,12 +2,12 @@ const Album = require("../model/Album");
 
 const create_album = async (req, res) => {
     try {
-        const { name_album, releaseDate, artist, img_album } = req.body;
+        const { nameAlbum, releaseDate, artist, imgAlbum } = req.body;
         const album = new Album({
-            name_album,
+            nameAlbum,
             releaseDate,
             artist,
-            img_album
+            imgAlbum
         })
         await album.save();
         res.status(200).json({ message: "Tạo mới album thành công" })
@@ -28,8 +28,8 @@ const get_all_album = async (req, res) => {
 
 const get_album_by_id = async (req, res) => {
     try {
-        const { album_id } = req.body
-        const album = await Album.findById(album_id).populate("artist")
+        const { idAlbum } = req.body
+        const album = await Album.findById(idAlbum).populate("artist")
         res.status(200).json(album)
     } catch (error) {
         res.status(400).json({ message: "Lỗi khi lấy thông tin của album" })
@@ -38,8 +38,8 @@ const get_album_by_id = async (req, res) => {
 
 const update_album = async (req, res) => {
     try {
-        const { album_id } = req.body;
-        const updatedAlbum = await Album.findByIdAndUpdate(album_id, req.body, { new: true });
+        const { idAlbum } = req.body;
+        const updatedAlbum = await Album.findByIdAndUpdate(idAlbum, req.body, { new: true });
         if (!updatedAlbum) {
             return res.status(404).json({ message: "Album không tồn tại" });
         }
@@ -52,8 +52,8 @@ const update_album = async (req, res) => {
 
 const delete_album = async (req, res) => {
     try {
-        const { album_id } = req.body
-        const album = await Album.findByIdAndDelete(album_id)
+        const { idAlbum } = req.body
+        const album = await Album.findByIdAndDelete(idAlbum)
         if (album) {
             res.status(200).json({ message: "Xóa album thành công" })
         } else {

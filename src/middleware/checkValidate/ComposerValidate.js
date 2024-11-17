@@ -1,7 +1,7 @@
 const validate_composer_create = (req, res, next) => {
-    const { name_genre, description_genre } = req.body
-    if (!name_genre || !description_genre) {
-        console.log(name_genre, description_genre)
+    const { nameGenre, descriptionGenre } = req.body
+    if (!nameGenre || !descriptionGenre) {
+        console.log(nameGenre, descriptionGenre)
         return res.status(400).json({ message: "Vui lòng nhập đủ thông tin" })
     }
     next();

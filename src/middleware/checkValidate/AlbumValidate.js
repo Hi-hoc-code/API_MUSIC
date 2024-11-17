@@ -1,6 +1,6 @@
 const validate_album_create = (req, res, next) => {
-    const { name_album, releaseDate, artist } = req.body
-    if (!name_album || !releaseDate || !artist) {
+    const { nameAlbum, releaseDate, artist } = req.body
+    if (!nameAlbum || !releaseDate || !artist) {
         res.status(400).json({ message: "Vui lòng nhập đủ thông tin album" })
     }
     next()

@@ -2,23 +2,23 @@ const Playlist = require('../../model/Playlist');
 const User = require('../../model/User');
 
 const check_playlist_exists = async (req, res, next) => {
-    const { name_playlist } = req.body;
-    const { user_id } = req.query;
+    const { namePlaylist } = req.body;
+    const { idUser } = req.query;
 
     try {
-        if (!user_id || !name_playlist) {
-            return res.status(400).json({ message: "Thiếu thông tin user_id hoặc name_playlist" });
+        if (!idUser || !namePlaylist) {
+            return res.status(400).json({ message: "Thiếu thông tin idUser hoặc namePlaylist" });
         }
 
-        const user = await User.findById(user_id);
+        const user = await User.findById(idUser);
         if (!user) {
             return res.status(404).json({ message: "Không tìm thấy người dùng" });
         }
 
         const playlistsID = user.playlist;
         const playlists = await Playlist.find({ _id: { $in: playlistsID } });
-        const playlistNames = playlists.map(p => p.name_playlist);
-        if (playlistNames.includes(name_playlist)) {
+        const playlistNames = playlists.map(p => p.namePlaylist);
+        if (playlistNames.includes(namePlaylist)) {
             return res.status(400).json({ message: "Playlist với tên này đã tồn tại" });
         }
 

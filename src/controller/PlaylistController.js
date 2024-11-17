@@ -5,9 +5,9 @@ const Song = require('../../src/model/Song');
 
 const create_playlist = async (req, res) => {
     try {
-        const { name_playlist, user_id } = req.body;
-        const newPlaylist = await new Playlist({ user_id, name_playlist }).save();
-        await User.findByIdAndUpdate(user_id, {
+        const { namePlaylist, idUser } = req.body;
+        const newPlaylist = await new Playlist({ idUser, namePlaylist }).save();
+        await User.findByIdAndUpdate(idUser, {
             $push: { playlist: newPlaylist._id }
         });
         console.log(newPlaylist);
@@ -21,11 +21,11 @@ const create_playlist = async (req, res) => {
 
 const get_all_playlist = async (req, res) => {
     try {
-        const { user_id } = req.body;
-        if (!user_id) {
-            return res.status(400).json({ message: "Vui lòng cung cấp user_id." });
+        const { idUser } = req.body;
+        if (!idUser) {
+            return res.status(400).json({ message: "Vui lòng cung cấp idUser." });
         }
-        const user = await User.findById(user_id).populate('playlist');
+        const user = await User.findById(idUser).populate('playlist');
         if (!user) {
             return res.status(404).json({ message: "Không tìm thấy người dùng này." });
         }
@@ -37,11 +37,11 @@ const get_all_playlist = async (req, res) => {
 };
 const get_playlist_by_id = async (req, res) => {
     try {
-        const { playlist_id } = req.body
-        if (!playlist_id) {
+        const { idPlaylist } = req.body
+        if (!idPlaylist) {
             return res.status(400).json({ message: "Lỗi khi lấy playlist" })
         }
-        const playlist = await Playlist.findById(playlist_id)
+        const playlist = await Playlist.findById(idPlaylist)
         console.log(playlist)
         res.status(200).json(playlist)
     } catch (error) {
@@ -50,11 +50,11 @@ const get_playlist_by_id = async (req, res) => {
 }
 const update_playlist = async (req, res) => {
     try {
-        const { playlist_id } = req.body;
-        if (!playlist_id) {
+        const { idPlaylist } = req.body;
+        if (!idPlaylist) {
             return res.status(400).json({ message: "Không nhận được id playlist" });
         }
-        const updatedPlaylist = await Playlist.findByIdAndUpdate(playlist_id, req.body, { new: true });
+        const updatedPlaylist = await Playlist.findByIdAndUpdate(idPlaylist, req.body, { new: true });
         if (!updatedPlaylist) {
             return res.status(404).json({ message: "Không tìm thấy playlist" });
         }
@@ -67,14 +67,14 @@ const update_playlist = async (req, res) => {
 
 const delete_playlist = async (req, res) => {
     try {
-        const { playlist_id, user_id } = req.body;
-        if (!playlist_id) {
+        const { idPlaylist, idUser } = req.body;
+        if (!idPlaylist) {
             return res.status(400).json({ message: "Không nhận được id playlist." });
         }
-        const playlist = await Playlist.findByIdAndDelete(playlist_id)
+        const playlist = await Playlist.findByIdAndDelete(idPlaylist)
         const user = await User.findByIdAndUpdate(
-            user_id,
-            { $pull: { playlist: playlist_id } },
+            idUser,
+            { $pull: { playlist: idPlaylist } },
             { new: true }
         );
         if (!playlist || !user) {

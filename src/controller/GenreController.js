@@ -2,11 +2,11 @@ const Genre = require('../../src/model/Genre');
 
 const create_genre = async (req, res) => {
     try {
-        const { name_genre, description_genre , img_genre} = req.body;
+        const { nameGenre, descriptionGenre , imgGenre} = req.body;
         const new_genre = new Genre({
-            name_genre,
-            description_genre,
-            img_genre
+            nameGenre,
+            descriptionGenre,
+            imgGenre
         });
         await new_genre.save();
         res.status(201).json({ message: "Tạo mới genre thành công" });

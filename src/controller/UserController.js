@@ -21,6 +21,18 @@ const get_all_user = async (req, res) => {
         res.status(400).json({ all_user })
     }
 }
+const get_user_by_id = async (req, res) => {
+    try {
+        const { idUser } = req.body
+        const user = await User.findById({ idUser })
+        if (!user) {
+            return res.status(400).json({ message: "Không thể tìm thấy user" })
+        }
+        return res.status(200).json(user)
+    } catch (error) {
+        res.status(500).json({ message: "Lỗi khi lấy thông tin người dùng" })
+    }
+}
 const register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
@@ -66,7 +78,7 @@ const get_otp = async (req, res) => {
 };
 const forgot_password = async (req, res) => {
     try {
-        const { email } = req.query;
+        const { email } = req.body
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: "Email không tồn tại!" });
@@ -134,68 +146,68 @@ const up_avatar = async (req, res) => {
 const up_premium = async (req, res) => {
     res.json({ message: "Updating funtion" })
 };
-const payment = async (req, res) => {
-    var accessKey = 'F8BBA842ECF85';
-    var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
-    var orderInfo = 'pay with MoMo';
-    var partnerCode = 'MOMO';
-    var redirectUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
-    var ipnUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
-    var requestType = "payWithMethod";
-    var amount = '50000';
-    var orderId = partnerCode + new Date().getTime();
-    var requestId = orderId;
-    var extraData = '';
-    var orderGroupId = '';
-    var autoCapture = true;
-    var lang = 'vi';
+// const payment = async (req, res) => {
+//     var accessKey = 'F8BBA842ECF85';
+//     var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
+//     var orderInfo = 'pay with MoMo';
+//     var partnerCode = 'MOMO';
+//     var redirectUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
+//     var ipnUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
+//     var requestType = "payWithMethod";
+//     var amount = '50000';
+//     var orderId = partnerCode + new Date().getTime();
+//     var requestId = orderId;
+//     var extraData = '';
+//     var orderGroupId = '';
+//     var autoCapture = true;
+//     var lang = 'vi';
 
-    var rawSignature = "accessKey=" + accessKey + "&amount=" + amount + "&extraData=" + extraData + "&ipnUrl=" + ipnUrl + "&orderId=" + orderId + "&orderInfo=" + orderInfo + "&partnerCode=" + partnerCode + "&redirectUrl=" + redirectUrl + "&requestId=" + requestId + "&requestType=" + requestType;
+//     var rawSignature = "accessKey=" + accessKey + "&amount=" + amount + "&extraData=" + extraData + "&ipnUrl=" + ipnUrl + "&orderId=" + orderId + "&orderInfo=" + orderInfo + "&partnerCode=" + partnerCode + "&redirectUrl=" + redirectUrl + "&requestId=" + requestId + "&requestType=" + requestType;
 
-    // Create the signature
-    const signature = crypto.createHmac('sha256', secretKey)
-        .update(rawSignature)
-        .digest('hex');
+//     // Create the signature
+//     const signature = crypto.createHmac('sha256', secretKey)
+//         .update(rawSignature)
+//         .digest('hex');
 
-    const requestBody = JSON.stringify({
-        partnerCode: partnerCode,
-        partnerName: "Test",
-        storeId: "MomoTestStore",
-        requestId: requestId,
-        amount: amount,
-        orderId: orderId,
-        orderInfo: orderInfo,
-        redirectUrl: redirectUrl,
-        ipnUrl: ipnUrl,
-        lang: lang,
-        requestType: requestType,
-        autoCapture: autoCapture,
-        extraData: extraData,
-        orderGroupId: orderGroupId,
-        signature: signature
-    });
+//     const requestBody = JSON.stringify({
+//         partnerCode: partnerCode,
+//         partnerName: "Test",
+//         storeId: "MomoTestStore",
+//         requestId: requestId,
+//         amount: amount,
+//         orderId: orderId,
+//         orderInfo: orderInfo,
+//         redirectUrl: redirectUrl,
+//         ipnUrl: ipnUrl,
+//         lang: lang,
+//         requestType: requestType,
+//         autoCapture: autoCapture,
+//         extraData: extraData,
+//         orderGroupId: orderGroupId,
+//         signature: signature
+//     });
 
-    const option = {
-        method: "POST",
-        url: "https://test-payment.momo.vn/v2/gateway/api/create",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        data: requestBody
-    };
+//     const option = {
+//         method: "POST",
+//         url: "https://test-payment.momo.vn/v2/gateway/api/create",
+//         headers: {
+//             "Content-Type": "application/json"
+//         },
+//         data: requestBody
+//     };
 
-    try {
-        const result = await axios(option);
-        return res.status(200).json(result.data);
-    } catch (error) {
-        console.error("MoMo API error:", error.response ? error.response.data : error.message);
-        return res.status(500).json({
-            statusCode: 500,
-            message: "Server error",
-            details: error.response ? error.response.data : error.message,
-        });
-    }
-};
+//     try {
+//         const result = await axios(option);
+//         return res.status(200).json(result.data);
+//     } catch (error) {
+//         console.error("MoMo API error:", error.response ? error.response.data : error.message);
+//         return res.status(500).json({
+//             statusCode: 500,
+//             message: "Server error",
+//             details: error.response ? error.response.data : error.message,
+//         });
+//     }
+// };
 module.exports = {
     register,
     login,
@@ -204,6 +216,7 @@ module.exports = {
     up_premium,
     get_otp,
     up_avatar,
-    payment,
-    get_all_user
+    // payment,
+    get_all_user,
+    get_user_by_id
 };

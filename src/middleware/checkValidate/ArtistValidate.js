@@ -1,7 +1,7 @@
 const validate_create_artist = (req, res, next) => {
-    const { name_artist, bio_artist } = req.body;
+    const { nameArtist, bioArtist } = req.body;
     console.log("Request body:", req.body);
-    if (!name_artist || !bio_artist) {
+    if (!nameArtist || !bioArtist) {
         return res.status(400).json({ message: "Vui lòng nhập đủ thông tin" });
     }
 
