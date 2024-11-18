@@ -21,10 +21,12 @@ const get_all_user = async (req, res) => {
         res.status(400).json({ all_user })
     }
 }
+
 const get_user_by_id = async (req, res) => {
     try {
-        const { idUser } = req.body
-        const user = await User.findById({ idUser })
+        const { id } = req.body
+        console.log(req.body)
+        const user = await User.findById(id)
         if (!user) {
             return res.status(400).json({ message: "Không thể tìm thấy user" })
         }
