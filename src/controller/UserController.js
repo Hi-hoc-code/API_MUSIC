@@ -28,7 +28,7 @@ const get_user_by_id = async (req, res) => {
         if (!user) {
             return res.status(400).json({ message: "Không thể tìm thấy user" })
         }
-        return res.status(200).json(user)
+        return res.status(201).json(user)
     } catch (error) {
         res.status(500).json({ message: "Lỗi khi lấy thông tin người dùng" })
     }
@@ -57,7 +57,7 @@ const login = async (req, res) => {
             return res.status(401).json({ message: "Invalid credentials!" });
         }
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.json({ token, user: { id: user._id, username: user.username, email: user.email, premium: user.premium }, message: "Đăng nhập thành công" });
+        res.status(201).json({ token, user: { id: user._id, username: user.username, email: user.email, premium: user.premium }, message: "Đăng nhập thành công" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -69,7 +69,7 @@ const get_otp = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại!" });
         }
-        res.json({ otp: user.otp });
+        res.status(201).json({ otp: user.otp });
         console.log(user.otp)
     } catch (error) {
         res.status(500).json({ message: "Đã xảy ra lỗi khi lấy OTP." });
@@ -84,7 +84,7 @@ const forgot_password = async (req, res) => {
             return res.status(404).json({ message: "Email không tồn tại!" });
         }
         const otp = crypto.randomInt(100000, 999999);
-        const otpDate = Date.now() + 30 * 1000;
+        const otpDate = Date.now() + 180 * 1000;
         user.otp = otp;
         console.log("otp được gửi đến gmail: ", otp)
         user.otpDate = otpDate;
@@ -94,7 +94,7 @@ const forgot_password = async (req, res) => {
             subject: "Password Reset OTP",
             text: `Mã OTP của bạn là ${otp}. Mã có hiệu lực trong 30 giây.`,
         });
-        res.json({ message: "Mã OTP đã được gửi đến email!" });
+        res.status(201).json({ message: "Mã OTP đã được gửi đến email!" });
         setTimeout(async () => {
             const userWithOtp = await User.findOne({ email });
             console.log(userWithOtp)
@@ -121,7 +121,7 @@ const reset_password = async (req, res) => {
         user.otpDate = null;
         await user.save();
 
-        res.json({ message: "Mật khẩu đã được đặt lại thành công!" });
+        res.status(201).json({ message: "Mật khẩu đã được đặt lại thành công!" });
     } catch (error) {
         res.status(500).json({ message: "Đã xảy ra lỗi khi đặt lại mật khẩu." });
         console.error(error);
