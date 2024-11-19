@@ -33,7 +33,7 @@ const get_all_song = async (req, res) => {
 const get_song_by_id = async (req, res) => {
     try {
         const { idSong } = req.body;
-        const song = await Song.findById({ idSong })
+        const song = await Song.findById( idSong )
             .populate({ path: 'artist', select: 'nameArtist' })
             .populate({ path: 'album', select: 'nameAlbum' })
             .populate({ path: 'genre', select: 'nameGenre' })
