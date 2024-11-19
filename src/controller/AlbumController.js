@@ -20,7 +20,7 @@ const get_all_album = async (req, res) => {
     try {
         const albums = await Album.find().populate("artist");
         res.status(200).json({ albums })
-        res.status(500).json({ message: "Lỗi không thể tìm thấy thông tin tất cả album 123" });
+     
     } catch (error) {
         res.status(500).json({ message: "Lỗi không thể tìm thấy thông tin tất cả album" });
     }
