@@ -3,7 +3,7 @@ const Playlist = require('../../src/model/Playlist');
 const User = require('../model/User');
 const Song = require('../../src/model/Song');
 
-const create_playlist = async (req, res) => {
+const createPlaylist = async (req, res) => {
     try {
         const { namePlaylist, idUser } = req.body;
         const newPlaylist = await new Playlist({ idUser, namePlaylist }).save();
@@ -19,7 +19,7 @@ const create_playlist = async (req, res) => {
 
 };
 
-const get_all_playlist = async (req, res) => {
+const getAllPlaylist = async (req, res) => {
     try {
         const { idUser } = req.body;
         if (!idUser) {
@@ -35,7 +35,7 @@ const get_all_playlist = async (req, res) => {
         res.status(500).json({ message: "Lỗi khi lấy danh sách playlist." });
     }
 };
-const get_playlist_by_id = async (req, res) => {
+const getPlaylistById = async (req, res) => {
     try {
         const { idPlaylist } = req.body
         if (!idPlaylist) {
@@ -48,7 +48,7 @@ const get_playlist_by_id = async (req, res) => {
         res.status(400).json({ message: "Lỗi khi lấy playlist" })
     }
 }
-const update_playlist = async (req, res) => {
+const updatePlaylist = async (req, res) => {
     try {
         const { idPlaylist } = req.body;
         if (!idPlaylist) {
@@ -65,7 +65,7 @@ const update_playlist = async (req, res) => {
     }
 };
 
-const delete_playlist = async (req, res) => {
+const deletePlaylist = async (req, res) => {
     try {
         const { idPlaylist, idUser } = req.body;
         if (!idPlaylist) {
@@ -86,9 +86,9 @@ const delete_playlist = async (req, res) => {
 };
 
 module.exports = {
-    create_playlist,
-    get_all_playlist,
-    get_playlist_by_id,
-    delete_playlist,
-    update_playlist
+    createPlaylist,
+    getAllPlaylist,
+    getPlaylistById,
+    deletePlaylist,
+    updatePlaylist
 };

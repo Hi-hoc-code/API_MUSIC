@@ -1,5 +1,9 @@
+const Artist = require('../model/Artist');
+const Composer = require('../model/Composer');
+const Genre = require('../model/Genre');
 const Song = require('../model/Song')
-const create_song = async (req, res) => {
+const Album = require('../model/Album')
+const createSong = async (req, res) => {
     try {
         const songs = req.body;
         const newSong = new Song(songs);
@@ -11,29 +15,108 @@ const create_song = async (req, res) => {
         }
 
 
-        res.status(200).json({ message: "Tạo mới bài hát thành công", newSong: savedSong });
+        res.status(201).json({ message: "Tạo mới bài hát thành công", newSong: savedSong });
     } catch (error) {
         res.status(400).json({ message: "Lỗi khi tạo mới bài hát", error: error.message });
     }
 }
-const get_all_song = async (req, res) => {
+
+const getSongArtist = async (req, res) => {
     try {
-        const { filters } = req.body;
-        const songs = await Song.find(filters)
+        const { nameArtist } = req.body;
+        const artist = await Artist.findOne({ nameArtist });
+        const songs = await Song.find({ artist: artist._id })
+            .select("_id nameSong imgSong artist composer audio")
+            .populate("artist", "nameArtist imgArtist")
+            .populate("composer", "nameComposer");
+        if (!songs || songs.length === 0) {
+            return res.status(404).json({ message: "Không tìm thấy bài hát nào với nghệ sĩ này" });
+        }
+        res.status(201).json(songs);
+    } catch (error) {
+        res.status(500).json({ message: "Đã xảy ra lỗi trong hệ thống" });
+    }
+};
+const getSongGenre = async (req, res) => {
+    try {
+        const { nameGenre } = req.body;
+        const genre = await Genre.findOne({ nameGenre });
+        const songs = await Song.find({ genre: genre._id })
+            .select("_id nameSong imgSong artist composer audio")
+            .populate("artist", "nameArtist imgArtist")
+            .populate("composer", "nameComposer");
+        if (!songs || songs.length === 0) {
+            return res.status(404).json({ message: "Không tìm thấy bài hát nào với nghệ sĩ này" });
+        }
+        res.status(201).json(songs);
+    } catch (error) {
+        res.status(500).json({ message: "Đã xảy ra lỗi trong hệ thống" });
+    }
+};
+const getSongComposer = async (req, res) => {
+    try {
+        const { nameComposer } = req.body;
+        const composer = await Composer.findOne({ nameComposer });
+        const songs = await Song.find({ composer: composer._id })
+            .select("_id nameSong imgSong artist composer audio")
+            .populate("artist", "nameArtist imgArtist")
+            .populate("composer", "nameComposer");
+        if (!songs || songs.length === 0) {
+            return res.status(404).json({ message: "Không tìm thấy bài hát nào với tác giả này" });
+        }
+        res.status(201).json(songs);
+    } catch (error) {
+        res.status(500).json({ message: "Đã xảy ra lỗi trong hệ thống" });
+    }
+};
+const getSongAlbum = async (req, res) => {
+    try {
+        const { nameAlbum } = req.body;
+        const album = await Album.findOne({ nameAlbum });
+        const songs = await Song.find({ album: album._id })
+            .select("_id nameSong imgSong artist composer audio")
+            .populate("artist", "nameArtist imgArtist")
+            .populate("composer", "nameComposer");
+        if (!songs || songs.length === 0) {
+            return res.status(404).json({ message: "Không tìm thấy bài hát nào với album này" });
+        }
+        res.status(201).json(songs);
+    } catch (error) {
+        res.status(500).json({ message: "Đã xảy ra lỗi trong hệ thống" });
+    }
+};
+const getSongPlaylist = async (req, res) => {
+    try {
+        const { nameGenre } = req.body;
+        const genre = await Genre.findOne({ nameGenre });
+        const songs = await Song.find({ genre: genre._id })
+            .select("_id nameSong imgSong artist composer audio")
+            .populate("artist", "nameArtist imgArtist")
+            .populate("composer", "nameComposer");
+        if (!songs || songs.length === 0) {
+            return res.status(404).json({ message: "Không tìm thấy bài hát nào với nghệ sĩ này" });
+        }
+        res.status(201).json(songs);
+    } catch (error) {
+        res.status(500).json({ message: "Đã xảy ra lỗi trong hệ thống" });
+    }
+};
+const getAllSong = async (req, res) => {
+    try {
+        const songs = await Song.find()
             .populate({ path: 'artist', select: 'nameArtist' })
             .populate({ path: 'album', select: 'nameArtist' })
             .populate({ path: 'genre', select: 'nameArtist' })
             .populate({ path: 'composer', select: 'nameArtist' });
-
-        res.status(200).json({ songs });
+        res.status(201).json({ songs });
     } catch (error) {
         res.status(500).json({ message: "Lỗi khi lấy danh sách bài hát", error: error.message });
     }
 };
-const get_song_by_id = async (req, res) => {
+const getSongById = async (req, res) => {
     try {
         const { idSong } = req.body;
-        const song = await Song.findById( idSong )
+        const song = await Song.findById(idSong)
             .populate({ path: 'artist', select: 'nameArtist' })
             .populate({ path: 'album', select: 'nameAlbum' })
             .populate({ path: 'genre', select: 'nameGenre' })
@@ -44,13 +127,13 @@ const get_song_by_id = async (req, res) => {
         }
         song.view += 1;
         await song.save();
-        res.status(200).json({ song });
+        res.status(201).json({ song });
     } catch (error) {
         res.status(500).json({ message: "An error occurred while retrieving song." });
         console.error(error);
     }
 }
-const update_song = async (req, res) => {
+const updateSong = async (req, res) => {
     try {
         const { idSong, songData } = req.body;
 
@@ -58,25 +141,25 @@ const update_song = async (req, res) => {
         if (!updatedSong) {
             return res.status(404).json({ message: "Không tìm thấy bài hát để cập nhật" });
         }
-        res.status(200).json({ message: "Cập nhật bài hát thành công", updatedSong });
+        res.status(201).json({ message: "Cập nhật bài hát thành công", updatedSong });
     } catch (error) {
         res.status(500).json({ message: "Lỗi khi cập nhật bài hát" });
         console.error(error);
     }
 };
-const delete_song = async (req, res) => {
+const deleteSong = async (req, res) => {
     try {
         const { idSong } = req.body
         const deleteSong = await Song.findByIdAndDelete(idSong)
         if (!deleteSong) {
             return res.status(400).json({ message: "Lỗi khi xóa bài hát" })
         }
-        res.status(200).json({ message: "Xóa bài hát thành công" })
+        res.status(201).json({ message: "Xóa bài hát thành công" })
     } catch (error) {
         return res.status(400).json({ error })
     }
 }
-const get_song_search = async (req, res) => {
+const searchSong = async (req, res) => {
     try {
         const { keyword } = req.body;
         const songs = await Song.find({
@@ -93,29 +176,56 @@ const get_song_search = async (req, res) => {
             .populate({ path: 'genre', select: 'nameGenre' })
             .populate({ path: 'composer', select: 'name_composer' });
 
-        res.status(200).json({ songs });
+        res.status(201).json({ songs });
     } catch (error) {
         res.status(500).json({ message: "An error occurred while searching for songs." });
         console.error(error);
     }
 }
-const get_song_by_trending = async (req, res) => {
+const getSongTop1 = async (req, res) => {
     try {
-        const songs = await Song.find({ view: { $gt: 0 } })
+        const song = await Song.findOne({ view: { $gt: 0 } })
             .sort({ view: -1 })
-            .limit(10)
             .populate({ path: 'artist', select: 'nameArtist' })
             .populate({ path: 'album', select: 'nameAlbum' })
             .populate({ path: 'genre', select: 'nameGenre' })
             .populate({ path: 'composer', select: 'name_composer' });
 
-        res.status(200).json({ songs });
+        if (!song) {
+            return res.status(404).json({ message: "No songs found." });
+        }
+
+        res.status(200).json({ song });
+    } catch (error) {
+        res.status(500).json({ message: "An error occurred while retrieving the song with the highest view." });
+        console.error(error);
+    }
+};
+
+const getSongTrending = async (req, res) => {
+    try {
+        const songs = await Song.find({ view: { $gt: 0 } })
+            .sort({ view: -1 })
+            .limit(15)
+            .populate({ path: 'artist', select: 'nameArtist' })
+            .populate({ path: 'album', select: 'nameAlbum' })
+            .populate({ path: 'genre', select: 'nameGenre' })
+            .populate({ path: 'composer', select: 'name_composer' });
+
+        res.status(201).json({ songs });
     } catch (error) {
         res.status(500).json({ message: "An error occurred while retrieving trending songs." });
         console.error(error);
     }
 }
-const favorite_song_idUser = async (req, res) => {
+const addSongFavorite = async (req, res) => {
+    try {
+
+    } catch (error) {
+
+    }
+}
+const getSongFavorite = async (req, res) => {
     try {
         const { userId, songId } = req.body;
         const user = await User.findById(userId);
@@ -131,12 +241,12 @@ const favorite_song_idUser = async (req, res) => {
         }
         user.favoriteSong.push(songId);
         await user.save();
-        res.status(200).json({ message: "Thêm bài hát vào danh sách ưa thích thành công", favoriteSongs: user.favoriteSong });
+        res.status(201).json({ message: "Thêm bài hát vào danh sách ưa thích thành công", favoriteSongs: user.favoriteSong });
     } catch (error) {
         res.status(500).json({ message: "Lỗi khi thêm bài hát vào danh sách ưa thích", error: error.message });
     }
 }
-const remove_favorite_song_idUser = async (req, res) => {
+const removeSongFavorite = async (req, res) => {
     try {
         const { userId, songId } = req.body;
         const user = await User.findById(userId);
@@ -149,19 +259,27 @@ const remove_favorite_song_idUser = async (req, res) => {
         user.favoriteSong = user.favoriteSong.filter(id => id.toString() !== songId);
         await user.save();
 
-        res.status(200).json({ message: "Xóa bài hát khỏi danh sách ưa thích thành công", favoriteSongs: user.favoriteSong });
+        res.status(201).json({ message: "Xóa bài hát khỏi danh sách ưa thích thành công", favoriteSongs: user.favoriteSong });
     } catch (error) {
         res.status(500).json({ message: "Lỗi khi xóa bài hát khỏi danh sách ưa thích", error: error.message });
     }
 };
 
 module.exports = {
-    create_song,
-    get_all_song,
-    get_song_by_id,
-    update_song,
-    delete_song,
-    get_song_search,
-    get_song_by_trending,
-    favorite_song_idUser
-}
+    createSong,
+    getSongArtist,
+    getSongGenre,
+    getSongComposer,
+    getSongAlbum,
+    getSongPlaylist,
+    getAllSong,
+    getSongById,
+    updateSong,
+    deleteSong,
+    searchSong,
+    getSongTop1,
+    getSongTrending,
+    getSongFavorite,
+    removeSongFavorite,
+    addSongFavorite
+};

@@ -1,8 +1,8 @@
 const validate_song = async (req, res, next) => {
     try {
-        const { name_song, artist, composer, genre, releaseYear } = req.body;
+        const { nameSong, artist, composer, genre, releaseYear } = req.body;
         console.log(req.body)
-        if (!name_song || !artist || !composer || !genre || !releaseYear) {
+        if (!nameSong || !artist || !composer || !genre || !releaseYear) {
             return res.status(400).json({ message: "Vui lòng nhập đủ thông tin bài hát" });
         }
         next();
