@@ -1,4 +1,4 @@
-const validate_create_artist = (req, res, next) => {
+const validate_createArtist = (req, res, next) => {
     const { nameArtist, bioArtist } = req.body;
     console.log("Request body:", req.body);
     if (!nameArtist || !bioArtist) {
@@ -9,5 +9,5 @@ const validate_create_artist = (req, res, next) => {
 };
 
 module.exports = {
-    validate_create_artist
+    validate_createArtist
 };

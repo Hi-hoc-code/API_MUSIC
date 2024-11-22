@@ -78,6 +78,7 @@ const getOTP = async (req, res) => {
         console.error(error);
     }
 };
+
 const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body
@@ -86,7 +87,7 @@ const forgotPassword = async (req, res) => {
             return res.status(404).json({ message: "Email không tồn tại!" });
         }
         const otp = crypto.randomInt(100000, 999999);
-        const otpDate = Date.now() + 180 * 1000;
+        const otpDate = Date.now() + 60 * 1000;
         user.otp = otp;
         console.log("otp được gửi đến gmail: ", otp)
         user.otpDate = otpDate;
@@ -94,7 +95,7 @@ const forgotPassword = async (req, res) => {
         await transporter.sendMail({
             to: user.email,
             subject: "Password Reset OTP",
-            text: `Mã OTP của bạn là ${otp}. Mã có hiệu lực trong 30 giây.`,
+            text: `Mã OTP của bạn là ${otp}. Mã có hiệu lực trong 60 giây.`,
         });
         res.status(201).json({ message: "Mã OTP đã được gửi đến email!" });
         setTimeout(async () => {

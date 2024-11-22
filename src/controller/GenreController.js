@@ -1,6 +1,6 @@
 const Genre = require('../../src/model/Genre');
 
-const create_genre = async (req, res) => {
+const createGenre = async (req, res) => {
     try {
         const { nameGenre, descriptionGenre , imgGenre} = req.body;
         const new_genre = new Genre({
@@ -15,7 +15,7 @@ const create_genre = async (req, res) => {
     }
 };
 
-const get_all_genre = async (req, res) => {
+const getAllGenre = async (req, res) => {
     try {
         const genres = await Genre.find();
         res.status(200).json(genres);
@@ -24,10 +24,10 @@ const get_all_genre = async (req, res) => {
     }
 };
 
-const get_genre_by_id = async (req, res) => {
+const getGenreById = async (req, res) => {
     try {
-        const { genre_id } = req.body;
-        const genre = await Genre.findById(genre_id);
+        const { idGenre } = req.body;
+        const genre = await Genre.findById(idGenre);
 
         if (!genre) {
             return res.status(404).json({ message: "Không tìm thấy genre" });
@@ -40,7 +40,7 @@ const get_genre_by_id = async (req, res) => {
     }
 };
 
-const update_genre = async (req, res) => {
+const updateGenre = async (req, res) => {
     try {
         const { id } = req.body;
         const genreUpdate = await Genre.findByIdAndUpdate(id, req.body, { new: true });
@@ -63,7 +63,7 @@ const update_genre = async (req, res) => {
 
 
 
-const delete_genre = async (req, res) => {
+const deleteGenre = async (req, res) => {
     try {
         const { genre_id } = req.body
         const genre = await Genre.findByIdAndDelete(genre_id)
@@ -79,9 +79,9 @@ const delete_genre = async (req, res) => {
 };
 
 module.exports = {
-    create_genre,
-    get_all_genre,
-    get_genre_by_id,
-    delete_genre,
-    update_genre
+    createGenre,
+    getAllGenre,
+    getGenreById,
+    deleteGenre,
+    updateGenre
 };

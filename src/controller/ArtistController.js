@@ -1,6 +1,6 @@
 const Artist = require('../model/Artist')
 
-const create_artist = async (req, res) => {
+const createArtist = async (req, res) => {
     try {
         const { nameArtist, bioArtist, imgArtist } = req.body
         console.log(req.body)
@@ -22,7 +22,7 @@ const create_artist = async (req, res) => {
     }
 }
 
-const get_all_artist = async (req, res) => {
+const getAllArtist = async (req, res) => {
     try {
         const artists = await Artist.find();
         res.status(200).json(artists);
@@ -31,10 +31,10 @@ const get_all_artist = async (req, res) => {
     }
 };
 
-const get_artist_by_id = async (req, res) => {
+const getArtistById = async (req, res) => {
     try {
-        const { artist_id } = req.body
-        const artist = await Artist.findById(artist_id);
+        const { idArtist } = req.body
+        const artist = await Artist.findById(idArtist);
         if (!artist) return res.status(404).json({ message: "Không thấy thông tin nghệ sĩ" });
         res.status(200).json(artist);
     } catch (error) {
@@ -42,7 +42,7 @@ const get_artist_by_id = async (req, res) => {
     }
 };
 
-const update_artist = async (req, res) => {
+const updateArtist = async (req, res) => {
     try {
         const { artist_id } = req.body;
         const updatedArtist = await Artist.findByIdAndUpdate(artist_id, req.body, { new: true });
@@ -67,7 +67,7 @@ const update_artist = async (req, res) => {
     }
 };
 
-const delete_artist = async (req, res) => {
+const deleteArtist = async (req, res) => {
     try {
         const { artist_id } = req.body;
         const deletedArtist = await Artist.findByIdAndDelete(artist_id);
@@ -89,9 +89,9 @@ const delete_artist = async (req, res) => {
 };
 
 module.exports = {
-    create_artist,
-    get_all_artist,
-    get_artist_by_id,
-    update_artist,
-    delete_artist,
+    createArtist,
+    getAllArtist,
+    getArtistById,
+    updateArtist,
+    deleteArtist,
 }

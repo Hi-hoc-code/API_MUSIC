@@ -1,6 +1,6 @@
 const Composer = require("../model/Composer");
 
-const create_composer = async (req, res) => {
+const createComposer = async (req, res) => {
     try {
         const { nameComposer, bioComposer, imgComposer } = req.body;
         console.log(req.body)
@@ -20,7 +20,7 @@ const create_composer = async (req, res) => {
     }
 };
 
-const get_all_composer = async (req, res) => {
+const getAllComposer = async (req, res) => {
     try {
         const composers = await Composer.find();
         res.status(200).json(composers);
@@ -29,10 +29,10 @@ const get_all_composer = async (req, res) => {
     }
 };
 
-const get_composer_by_id = async (req, res) => {
+const getComposerById = async (req, res) => {
     try {
-        const { id_composer } = req.body
-        const composer = await Composer.findById(id_composer)
+        const { idComposer } = req.body
+        const composer = await Composer.findById(idComposer)
         console.log(composer)
         if (!composer) return res.status(404).json({ message: "Không thấy thông tin nghệ sĩ" });
         res.status(200).json(composer);
@@ -41,7 +41,7 @@ const get_composer_by_id = async (req, res) => {
     }
 };
 
-const update_composer = async (req, res) => {
+const updateComposer = async (req, res) => {
     try {
         const { id_composer } = req.body;
         const updatedComposer = await Composer.findByIdAndUpdate(id_composer, req.body, { new: true });
@@ -57,7 +57,7 @@ const update_composer = async (req, res) => {
     }
 };
 
-const delete_composer = async (req, res) => {
+const deleteComposer = async (req, res) => {
     try {
         const { id_composer } = req.body
 
@@ -75,9 +75,9 @@ const delete_composer = async (req, res) => {
 
 
 module.exports = {
-    create_composer,
-    get_all_composer,
-    get_composer_by_id,
-    update_composer,
-    delete_composer,
+    createComposer,
+    getAllComposer,
+    getComposerById,
+    updateComposer,
+    deleteComposer,
 };

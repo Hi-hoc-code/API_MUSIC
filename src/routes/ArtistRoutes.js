@@ -1,20 +1,20 @@
 const express = require('express')
 const router = express.Router();
 const {
-    create_artist,
-    get_all_artist,
-    get_artist_by_id,
-    update_artist,
-    delete_artist
+    createArtist,
+    getAllArtist,
+    getArtistById,
+    updateArtist,
+    deleteArtist
 } = require('../controller/ArtistController');
 const { check_artist_exists } = require('../middleware/checkExists/ArtistExists');
-const { validate_create_artist } = require('../middleware/checkValidate/ArtistValidate');
+const { validate_createArtist } = require('../middleware/checkValidate/ArtistValidate');
 
-router.post('/create_artist', validate_create_artist, check_artist_exists, create_artist)
-router.post('/get_all_artist', get_all_artist)
-router.post('/get_artist_by_id', get_artist_by_id)
-router.post('/update_artist', update_artist)
-router.post('/delete_artist', delete_artist);
+router.post('/createArtist', validate_createArtist, check_artist_exists, createArtist)
+router.post('/getAllArtist', getAllArtist)
+router.post('/getArtistById', getArtistById)
+router.post('/updateArtist', updateArtist)
+router.post('/deleteArtist', deleteArtist);
 
 
 module.exports = router

@@ -219,50 +219,13 @@ const getSongTrending = async (req, res) => {
     }
 }
 const addSongFavorite = async (req, res) => {
-    try {
 
-    } catch (error) {
-
-    }
 }
 const getSongFavorite = async (req, res) => {
-    try {
-        const { userId, songId } = req.body;
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: "Người dùng không tồn tại" });
-        }
-        const song = await Song.findById(songId);
-        if (!song) {
-            return res.status(404).json({ message: "Bài hát không tồn tại" });
-        }
-        if (user.favoriteSong.includes(songId)) {
-            return res.status(400).json({ message: "Bài hát đã có trong danh sách ưa thích" });
-        }
-        user.favoriteSong.push(songId);
-        await user.save();
-        res.status(201).json({ message: "Thêm bài hát vào danh sách ưa thích thành công", favoriteSongs: user.favoriteSong });
-    } catch (error) {
-        res.status(500).json({ message: "Lỗi khi thêm bài hát vào danh sách ưa thích", error: error.message });
-    }
+
 }
 const removeSongFavorite = async (req, res) => {
-    try {
-        const { userId, songId } = req.body;
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: "Người dùng không tồn tại" });
-        }
-        if (!user.favoriteSong.includes(songId)) {
-            return res.status(400).json({ message: "Bài hát không có trong danh sách ưa thích" });
-        }
-        user.favoriteSong = user.favoriteSong.filter(id => id.toString() !== songId);
-        await user.save();
 
-        res.status(201).json({ message: "Xóa bài hát khỏi danh sách ưa thích thành công", favoriteSongs: user.favoriteSong });
-    } catch (error) {
-        res.status(500).json({ message: "Lỗi khi xóa bài hát khỏi danh sách ưa thích", error: error.message });
-    }
 };
 
 module.exports = {

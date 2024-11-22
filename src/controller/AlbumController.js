@@ -1,6 +1,6 @@
 const Album = require("../model/Album");
 
-const create_album = async (req, res) => {
+const createAlbum = async (req, res) => {
     try {
         const { nameAlbum, releaseDate, artist, imgAlbum } = req.body;
         const album = new Album({
@@ -16,7 +16,7 @@ const create_album = async (req, res) => {
     }
 }
 
-const get_all_album = async (req, res) => {
+const getAllAlbum = async (req, res) => {
     try {
         const albums = await Album.find().populate("artist");
         res.status(200).json({ albums })
@@ -26,7 +26,7 @@ const get_all_album = async (req, res) => {
     }
 };
 
-const get_album_by_id = async (req, res) => {
+const getAlbumById = async (req, res) => {
     try {
         const { idAlbum } = req.body
         const album = await Album.findById(idAlbum).populate("artist")
@@ -36,7 +36,7 @@ const get_album_by_id = async (req, res) => {
     }
 }
 
-const update_album = async (req, res) => {
+const updateAlbum = async (req, res) => {
     try {
         const { idAlbum } = req.body;
         const updatedAlbum = await Album.findByIdAndUpdate(idAlbum, req.body, { new: true });
@@ -50,7 +50,7 @@ const update_album = async (req, res) => {
     }
 };
 
-const delete_album = async (req, res) => {
+const deleteAlbum = async (req, res) => {
     try {
         const { idAlbum } = req.body
         const album = await Album.findByIdAndDelete(idAlbum)
@@ -66,9 +66,9 @@ const delete_album = async (req, res) => {
 }
 
 module.exports = {
-    create_album,
-    get_all_album,
-    get_album_by_id,
-    update_album,
-    delete_album
+    createAlbum,
+    getAllAlbum,
+    getAlbumById,
+    updateAlbum,
+    deleteAlbum
 }
