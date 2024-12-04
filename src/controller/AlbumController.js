@@ -1,20 +1,37 @@
 const Album = require("../model/Album");
 
+
 const createAlbum = async (req, res) => {
     try {
         const { nameAlbum, releaseDate, artist, imgAlbum } = req.body;
+        
+
         const album = new Album({
             nameAlbum,
             releaseDate,
             artist,
             imgAlbum
-        })
-        await album.save();
-        res.status(200).json({ message: "Tạo mới album thành công" })
+        });
+
+        // Lưu album vào cơ sở dữ liệu
+        const savedAlbum = await album.save();
+        console.log('Saved album', savedAlbum);
+        
+        // Trả về phản hồi thành công
+        return res.status(200).json({ message: "Tạo mới album thành công", album: savedAlbum });
+
     } catch (error) {
-        res.status(500).json({ message: "Lỗi tạo mới album" })
+        // Log lỗi chi tiết
+        console.error("Error creating album:", error);
+
+        // Trả về phản hồi lỗi
+        if (!res.headersSent) {
+            return res.status(500).json({ message: "Lỗi tạo mới album", error: error.message });
+        }
     }
-}
+};
+
+
 
 const getAllAlbum = async (req, res) => {
     try {
