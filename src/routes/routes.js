@@ -8,6 +8,7 @@ const albumRoutes = require('./AlbumRoutes');
 const genreRoutes = require('./GenreRoutes');
 const playlistRoutes = require('./PlaylistRoutes');
 const songRoutes = require('./SongRoutes');
+const uploadimgae = require('./uploadImage');
 
 router.get('/', (req, res) => {
     res.send(`
@@ -25,5 +26,6 @@ router.use('/album', albumRoutes);
 router.use('/genre', genreRoutes);
 router.use('/playlist', playlistRoutes);
 router.use('/song', songRoutes);
+router.use('/upload-image', uploadimgae);
 
 module.exports = router;
