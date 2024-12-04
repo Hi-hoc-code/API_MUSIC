@@ -5,7 +5,7 @@ const { check_album_exists } = require('../middleware/checkExists/AlbumExist');
 const router = express.Router();
 
 router.post('/createAlbum', validate_album_create, check_album_exists, createAlbum)
-router.post('/getAllAlbum', getAllAlbum)
+router.get('/getAllAlbum', getAllAlbum)
 router.post('/getAlbumById', getAlbumById)
 router.post('/updateAlbum', updateAlbum)
 router.post('/deleteAlbum', deleteAlbum)
