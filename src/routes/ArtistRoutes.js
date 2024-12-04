@@ -11,7 +11,7 @@ const { check_artist_exists } = require('../middleware/checkExists/ArtistExists'
 const { validate_createArtist } = require('../middleware/checkValidate/ArtistValidate');
 
 router.post('/createArtist', validate_createArtist, check_artist_exists, createArtist)
-router.post('/getAllArtist', getAllArtist)
+router.get('/getAllArtist', getAllArtist)
 router.post('/getArtistById', getArtistById)
 router.post('/updateArtist', updateArtist)
 router.post('/deleteArtist', deleteArtist);
