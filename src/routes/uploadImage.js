@@ -1,14 +1,27 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router();
 const cloudinary = require('./../config/cloudinary');
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const path = require('path');
+
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, '/tmp/'); 
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage });
 
 router.post('/upload', upload.single('image'), async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ message: 'No file uploaded' });
         }
+
         const result = await cloudinary.uploader.upload(req.file.path);
         res.json({
             secure_url: result.secure_url,
@@ -19,9 +32,4 @@ router.post('/upload', upload.single('image'), async (req, res) => {
     }
 });
 
-
-module.exports = router
-
-
-
-
+module.exports = router;
