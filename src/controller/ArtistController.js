@@ -15,7 +15,7 @@ const createArtist = async (req, res) => {
             message: "Tạo Artist thành công",
             artist
         })
-    } catch (error) {
+    } catch (error) {   
         res.status(500).json({
             message: "Lỗi khi tạo Artist"
         })

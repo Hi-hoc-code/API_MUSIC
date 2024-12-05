@@ -17,8 +17,6 @@ router.get('/', (req, res) => {
         </div>
     `);
 });
-
-
 router.use('/user', userRoutes);
 router.use('/artist', artistRoutes);
 router.use('/composer', composerRoutes);

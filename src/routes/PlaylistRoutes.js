@@ -5,7 +5,7 @@ const { check_playlist_exists } = require('../middleware/checkExists/PlaylistExi
 const router = express.Router()
 
 router.post('/createPlaylist', validate_playlist_create, check_playlist_exists, createPlaylist)
-router.post('/getAllPlaylist', getAllPlaylist)
+router.get('/getAllPlaylist', getAllPlaylist)
 router.post('/getPlaylistById', getPlaylistById)
 router.post('/deletePlaylist', deletePlaylist)
 router.post('/updatePlaylist', updatePlaylist)

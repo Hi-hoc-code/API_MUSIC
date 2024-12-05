@@ -10,7 +10,7 @@ const {
 
 
 router.post('/createComposer', createComposer)
-router.post('/getAllComposer', getAllComposer)
+router.get('/getAllComposer', getAllComposer)
 router.post('/getComposerById', getComposerById)
 router.post('/updateComposer', updateComposer)
 router.post('/deleteComposer', deleteComposer);

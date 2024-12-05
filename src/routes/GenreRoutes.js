@@ -11,7 +11,7 @@ const { validate_genre_create } = require('../middleware/checkValidate/GenreVali
 const { check_genre_exists } = require('../middleware/checkExists/GenreExists');
 
 router.post('/createGenre', validate_genre_create, check_genre_exists, createGenre);
-router.post('/getAllGenre', getAllGenre);
+router.get('/getAllGenre', getAllGenre);
 router.post('/getGenreById', getGenreById);
 router.post('/deleteGenre', deleteGenre)
 router.post('/updateGenre', updateGenre)
