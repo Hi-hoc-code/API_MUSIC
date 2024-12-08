@@ -10,7 +10,7 @@ router.post('/getSongGenre', getSongGenre);
 router.post('/getSongComposer', getSongComposer);
 router.post('/getSongAlbum', getSongAlbum);
 router.post('/getSongPlaylist', getSongPlaylist);
-router.post('/getAllSong', getAllSong);
+router.get('/getAllSong', getAllSong);
 router.post('/getSongById', getSongById);
 router.post('/updateSong', updateSong)
 router.post('/deleteSong', deleteSong)
