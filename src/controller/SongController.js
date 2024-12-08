@@ -104,8 +104,8 @@ const getSongPlaylist = async (req, res) => {
 const getAllSong = async (req, res) => {
     try {
         const songs = await Song.find()
-            .populate({ path: 'artist', select: 'nameAlbum' })
-            .populate({ path: 'album', select: 'nameArtist' })
+            .populate({ path: 'artist', select: 'nameArtist' })
+            .populate({ path: 'album', select: 'nameAlbum' })
             .populate({ path: 'genre', select: 'nameGenre' })
             .populate({ path: 'composer', select: 'nameComposer' });
         res.status(201).json({ songs });
