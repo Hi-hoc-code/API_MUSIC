@@ -104,10 +104,10 @@ const getSongPlaylist = async (req, res) => {
 const getAllSong = async (req, res) => {
     try {
         const songs = await Song.find()
-            .populate({ path: 'artist', select: 'nameArtist' })
+            .populate({ path: 'artist', select: 'nameAlbum' })
             .populate({ path: 'album', select: 'nameArtist' })
-            .populate({ path: 'genre', select: 'nameArtist' })
-            .populate({ path: 'composer', select: 'nameArtist' });
+            .populate({ path: 'genre', select: 'nameGenre' })
+            .populate({ path: 'composer', select: 'nameComposer' });
         res.status(201).json({ songs });
     } catch (error) {
         res.status(500).json({ message: "Lỗi khi lấy danh sách bài hát", error: error.message });
