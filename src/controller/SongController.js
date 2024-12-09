@@ -3,23 +3,42 @@ const Composer = require('../model/Composer');
 const Genre = require('../model/Genre');
 const Song = require('../model/Song')
 const Album = require('../model/Album')
+const mongoose = require('mongoose');
+
+
 const createSong = async (req, res) => {
     try {
+        console.log('Request Body:', req.body);
         const songs = req.body;
-        const newSong = new Song(songs);
+        const newSong = new Song({
+            nameSong: songs.nameSong,
+            imgSong: songs.imgSong,
+            audio: songs.audio,
+            artist: Array.isArray(songs.artist) ? songs.artist.map(id => new mongoose.Types.ObjectId(id)) : [],
+            composer: songs.composer ? [new mongoose.Types.ObjectId(songs.composer)] : [],
+            genre: songs.genre ? [new mongoose.Types.ObjectId(songs.genre)] : [],
+            playlist: songs.playlist ? [new mongoose.Types.ObjectId(songs.playlist)] : [],
+            album: songs.album ? [new mongoose.Types.ObjectId(songs.album)] : [],
+            releaseYear: parseInt(songs.releaseYear, 10) || null,
+            duration: songs.duration || '',
+            view: parseInt(songs.view, 10) || 0
+        });
 
         const savedSong = await newSong.save();
+        console.log('SavedSong:', savedSong);
 
         if (!savedSong) {
             return res.status(400).json({ message: "Lỗi khi tạo mới bài hát" });
         }
 
-
         res.status(201).json({ message: "Tạo mới bài hát thành công", newSong: savedSong });
     } catch (error) {
+        console.error('Error:', error);
         res.status(400).json({ message: "Lỗi khi tạo mới bài hát", error: error.message });
     }
 }
+
+
 
 const getSongArtist = async (req, res) => {
     try {
