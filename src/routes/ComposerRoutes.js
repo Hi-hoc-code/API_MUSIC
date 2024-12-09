@@ -12,8 +12,8 @@ const {
 router.post('/createComposer', createComposer)
 router.get('/getAllComposer', getAllComposer)
 router.post('/getComposerById', getComposerById)
-router.post('/updateComposer', updateComposer)
-router.post('/deleteComposer', deleteComposer);
+router.put('/updateComposer', updateComposer)
+router.delete('/deleteComposer', deleteComposer);
 
 module.exports = router
 

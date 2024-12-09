@@ -4,7 +4,7 @@ const Album = require("../model/Album");
 const createAlbum = async (req, res) => {
     try {
         const { nameAlbum, releaseDate, artist, imgAlbum } = req.body;
-        
+
 
         const album = new Album({
             nameAlbum,
@@ -16,7 +16,7 @@ const createAlbum = async (req, res) => {
         // Lưu album vào cơ sở dữ liệu
         const savedAlbum = await album.save();
         console.log('Saved album', savedAlbum);
-        
+
         // Trả về phản hồi thành công
         return res.status(200).json({ message: "Tạo mới album thành công", album: savedAlbum });
 
@@ -37,7 +37,7 @@ const getAllAlbum = async (req, res) => {
     try {
         const albums = await Album.find().populate("artist");
         res.status(200).json({ albums })
-     
+
     } catch (error) {
         res.status(500).json({ message: "Lỗi không thể tìm thấy thông tin tất cả album" });
     }
@@ -69,18 +69,22 @@ const updateAlbum = async (req, res) => {
 
 const deleteAlbum = async (req, res) => {
     try {
-        const { idAlbum } = req.body
-        const album = await Album.findByIdAndDelete(idAlbum)
+        const { id } = req.params; 
+        const album = await Album.findByIdAndDelete(id);
+        console.log('Album deleted', album);
+
         if (album) {
-            res.status(200).json({ message: "Xóa album thành công" })
+            res.status(200).json({ message: "Xóa album thành công" });
         } else {
-            res.status(400).json({ message: "Xóa album thất bại" })
+            res.status(400).json({ message: "Xóa album thất bại" });
         }
 
     } catch (error) {
-        res.status(500).json({ message: "Lỗi xóa album" })
+        console.error('Error deleting album:', error);
+        res.status(500).json({ message: "Lỗi xóa album" });
     }
-}
+};
+
 
 module.exports = {
     createAlbum,

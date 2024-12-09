@@ -13,8 +13,8 @@ const { validate_createArtist } = require('../middleware/checkValidate/ArtistVal
 router.post('/createArtist', validate_createArtist, check_artist_exists, createArtist)
 router.get('/getAllArtist', getAllArtist)
 router.post('/getArtistById', getArtistById)
-router.post('/updateArtist', updateArtist)
-router.post('/deleteArtist', deleteArtist);
+router.put('/updateArtist', updateArtist)
+router.delete('/deleteArtist/:id', deleteArtist);
 
 
 module.exports = router

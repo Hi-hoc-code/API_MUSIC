@@ -12,8 +12,8 @@ router.post('/getSongAlbum', getSongAlbum);
 router.post('/getSongPlaylist', getSongPlaylist);
 router.get('/getAllSong', getAllSong);
 router.post('/getSongById', getSongById);
-router.post('/updateSong', updateSong)
-router.post('/deleteSong', deleteSong)
+router.put('/updateSong', updateSong)
+router.delete('/deleteSong', deleteSong)
 router.post('/searchSong', searchSong)
 router.post('/getSongTop1', getSongTop1)
 router.post('/getSongTrending', getSongTrending)

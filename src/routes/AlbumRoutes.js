@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/createAlbum', validate_album_create, check_album_exists, createAlbum)
 router.get('/getAllAlbum', getAllAlbum)
 router.post('/getAlbumById', getAlbumById)
-router.post('/updateAlbum', updateAlbum)
-router.post('/deleteAlbum', deleteAlbum)
+router.put('/updateAlbum', updateAlbum)
+router.delete('/deleteAlbum/:id', deleteAlbum)
 
 module.exports = router
