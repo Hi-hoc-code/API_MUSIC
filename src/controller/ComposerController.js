@@ -44,24 +44,32 @@ const getComposerById = async (req, res) => {
 const updateComposer = async (req, res) => {
     try {
         const { id_composer } = req.body;
-        const updatedComposer = await Composer.findByIdAndUpdate(id_composer, req.body, { new: true });
+        if (!id_composer) {
+            return res.status(400).json({ message: "ID nghệ sĩ là bắt buộc" });
+        }        const updatedComposer = await Composer.findByIdAndUpdate(id_composer, req.body, { new: true });
+
         if (!updatedComposer) {
             return res.status(404).json({ message: "Không thấy nghệ sĩ" });
         }
+
         res.status(200).json({
             message: "Thay đổi thông tin nghệ sĩ thành công",
             updatedComposer
         });
     } catch (error) {
-        res.status(500).json({ message: "Không thể cập nhập nghệ sĩ" });
+        if (error.kind === 'ObjectId') {
+            return res.status(400).json({ message: "ID nghệ sĩ không hợp lệ" });
+        }
+        res.status(500).json({ message: "Không thể cập nhật nghệ sĩ", error: error.message });
     }
 };
 
+
 const deleteComposer = async (req, res) => {
     try {
-        const { id_composer } = req.body; // Lấy id_composer từ body của request
+        const { id_composer } = req.body;
 
-        const deletedComposer = await Composer.findByIdAndDelete(id_composer); // Đổi tên biến
+        const deletedComposer = await Composer.findByIdAndDelete(id_composer);
         console.log(deletedComposer);
         
         if (!deletedComposer) {

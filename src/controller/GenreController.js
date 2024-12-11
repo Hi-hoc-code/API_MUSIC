@@ -42,24 +42,48 @@ const getGenreById = async (req, res) => {
 
 const updateGenre = async (req, res) => {
     try {
-        const { id } = req.body;
-        const genreUpdate = await Genre.findByIdAndUpdate(id, req.body, { new: true });
+        const { id, name, description, image } = req.body;
 
+        console.log("Received request to update genre:", { id, name, description, image });
+
+        if (!id) {
+            console.log("Missing genre ID");
+            return res.status(400).json({ message: "ID genre là bắt buộc" });
+        }
+
+        const genreUpdate = await Genre.findByIdAndUpdate(id, {
+            nameGenre: name,
+            descriptionGenre: description,
+            imgGenre: image
+        }, { new: true });
+        
         if (!genreUpdate) {
+            console.log(`Genre with ID ${id} not found`);
             return res.status(404).json({ message: "Không thấy genre" });
         }
+
+        console.log("Genre updated successfully:", genreUpdate);
 
         res.status(200).json({
             message: "Thay đổi thông tin genre thành công",
             genreUpdate
         });
     } catch (error) {
+        console.error("Error during genre update:", error);
+
+        if (error.kind === 'ObjectId') {
+            console.log("Invalid ObjectId format");
+            return res.status(400).json({ message: "ID genre không hợp lệ" });
+        }
+
         res.status(500).json({
             message: "Lỗi khi cập nhật genre",
             error: error.message
         });
     }
 };
+
+
 
 
 

@@ -152,20 +152,49 @@ const getSongById = async (req, res) => {
         console.error(error);
     }
 }
+
+
 const updateSong = async (req, res) => {
     try {
-        const { idSong, songData } = req.body;
+        const { idSong, nameSong, releaseDate, artists, imgAlbum, mp3Url, composer, genre, playlist, duration, view } = req.body;
+        console.log('Received song data:', { idSong, nameSong, releaseDate, artists, imgAlbum, mp3Url, composer, genre, playlist, duration, view });
 
-        const updatedSong = await Song.findByIdAndUpdate(idSong, songData, { new: true });
+        const validatedArtists = Array.isArray(artists) ? artists : [];
+        const validatedComposer = Array.isArray(composer) ? composer : [];
+        const validatedGenre = Array.isArray(genre) ? genre : [];
+        const validatedPlaylist = Array.isArray(playlist) ? playlist : [];
+
+        const updatedSong = await Song.findByIdAndUpdate(idSong, {
+            nameSong,
+            releaseYear: releaseDate,
+            artist: validatedArtists,
+            imgSong: imgAlbum,
+            audio: mp3Url,
+            composer: validatedComposer,
+            genre: validatedGenre,
+            playlist: validatedPlaylist,
+            duration,
+            view
+        }, { new: true });
+
         if (!updatedSong) {
             return res.status(404).json({ message: "Không tìm thấy bài hát để cập nhật" });
         }
-        res.status(201).json({ message: "Cập nhật bài hát thành công", updatedSong });
+
+        res.status(200).json({ message: "Cập nhật bài hát thành công", updatedSong });
     } catch (error) {
+        console.error('Error updating song:', error);
         res.status(500).json({ message: "Lỗi khi cập nhật bài hát" });
-        console.error(error);
     }
 };
+
+
+
+// Helper function to validate MongoDB ObjectId
+const isValidObjectId = (id) => {
+    return /^[0-9a-fA-F]{24}$/.test(id);
+};
+
 const deleteSong = async (req, res) => {
     try {
         const { idSong } = req.body
