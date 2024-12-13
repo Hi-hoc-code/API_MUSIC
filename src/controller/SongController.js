@@ -110,7 +110,7 @@ const getSongPlaylist = async (req, res) => {
         const genre = await Genre.findOne({ nameGenre });
         const songs = await Song.find({ genre: genre._id })
             .select("_id nameSong imgSong artist composer audio")
-            .populate("artist", "nameArtist imgArtist")
+            .populate("artist", "nameArtist")
             .populate("composer", "nameComposer");
         if (!songs || songs.length === 0) {
             return res.status(404).json({ message: "Không tìm thấy bài hát nào với nghệ sĩ này" });
@@ -237,7 +237,7 @@ const getSongTop1 = async (req, res) => {
             .populate({ path: 'artist', select: 'nameArtist' })
             .populate({ path: 'album', select: 'nameAlbum' })
             .populate({ path: 'genre', select: 'nameGenre' })
-            .populate({ path: 'composer', select: 'name_composer' });
+            .populate({ path: 'composer', select: 'nameComposer' });
 
         if (!song) {
             return res.status(404).json({ message: "No songs found." });
@@ -250,22 +250,51 @@ const getSongTop1 = async (req, res) => {
     }
 };
 
+// const getSongTrending = async (req, res) => {
+//     try {
+//         const songs = await Song.find({ view: { $gt: 0 } })
+//             .sort({ view: -1 })
+//             .limit(15)
+//             .populate({ path: 'artist', select: 'nameArtist' })
+//             .populate({ path: 'album', select: 'nameAlbum' })
+//             .populate({ path: 'genre', select: 'nameGenre' })
+//             .populate({ path: 'composer', select: 'name_composer' });
+
+//         res.status(201).json({ songs });
+//     } catch (error) {
+//         res.status(500).json({ message: "An error occurred while retrieving trending songs." });
+//         console.error(error);
+//     }
+// }
 const getSongTrending = async (req, res) => {
     try {
         const songs = await Song.find({ view: { $gt: 0 } })
             .sort({ view: -1 })
             .limit(15)
-            .populate({ path: 'artist', select: 'nameArtist' })
+            .populate({ path: 'artist', select: 'nameArtist imgArtist' })
             .populate({ path: 'album', select: 'nameAlbum' })
             .populate({ path: 'genre', select: 'nameGenre' })
-            .populate({ path: 'composer', select: 'name_composer' });
+            .populate({ path: 'composer', select: 'nameComposer' });
 
-        res.status(201).json({ songs });
+        // Trả về các đối tượng riêng biệt (không có mảng songs[])
+        const response = songs.map(song => ({
+            artist: song.artist.length > 0 ? song.artist[0] : {},
+            album: song.album.length > 0 ? song.album[0] : {},
+            genre: song.genre.length > 0 ? song.genre[0] : {},
+            composer: song.composer.length > 0 ? song.composer[0] : {},
+            releaseYear: song.releaseYear,
+            duration: song.duration,
+            imgSong: song.imgSong,
+            nameSong: song.nameSong
+        }));
+
+        res.status(200).json(response);
     } catch (error) {
         res.status(500).json({ message: "An error occurred while retrieving trending songs." });
         console.error(error);
     }
 }
+
 const addSongFavorite = async (req, res) => {
 
 }
