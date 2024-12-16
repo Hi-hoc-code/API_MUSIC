@@ -27,7 +27,7 @@ const getAllPlaylist = async (req, res) => {
         }
         const user = await User.findById(idUser).populate('playlist');
         if (!user) {
-          return res.status(404).json({ message: "Không tìm thấy người dùng này." });
+            return res.status(404).json({ message: "Không tìm thấy người dùng này." });
         }
         res.status(201).json(user.playlist);
     } catch (error) {

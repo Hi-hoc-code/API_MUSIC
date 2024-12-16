@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createSong, getSongArtist, getSongGenre, getSongComposer, getSongAlbum, getSongPlaylist, getAllSong, getSongById, updateSong, deleteSong, searchSong, getSongTop1, getSongTrending, getSongFavorite, removeSongFavorite, addSongFavorite } = require('../controller/SongController');
+const { createSong, getSongArtist, getSongGenre, getSongComposer, getSongAlbum, getSongPlaylist, getAllSong, getSongById, updateSong, deleteSong, searchSong, getSongTop1, getSongTrending, getSongFavorite, removeSongFavorite, addSongFavorite, addSongPlaylist } = require('../controller/SongController');
 const { validate_song } = require('../middleware/checkValidate/SongValidate');
 const { check_song_exists } = require('../middleware/checkExists/SongExists');
 
@@ -20,4 +20,5 @@ router.post('/getSongTrending', getSongTrending)
 router.post('/getSongFavorite', getSongFavorite)
 router.post('/removeSongFavorite', removeSongFavorite)
 router.post('/addSongFavorite', addSongFavorite)
+router.post('/addSongPlaylist', addSongPlaylist)
 module.exports = router;

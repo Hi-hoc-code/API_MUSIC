@@ -4,6 +4,7 @@ const Genre = require('../model/Genre');
 const Song = require('../model/Song')
 const Album = require('../model/Album')
 const mongoose = require('mongoose');
+const Playlist = require('../model/Playlist');
 
 
 const createSong = async (req, res) => {
@@ -301,6 +302,10 @@ const getSongTrending = async (req, res) => {
 const addSongFavorite = async (req, res) => {
 
 }
+const addSongPlaylist = async (req, res) => {
+
+};
+
 const getSongFavorite = async (req, res) => {
 
 }
@@ -324,5 +329,6 @@ module.exports = {
     getSongTrending,
     getSongFavorite,
     removeSongFavorite,
-    addSongFavorite
+    addSongFavorite,
+    addSongPlaylist
 };
