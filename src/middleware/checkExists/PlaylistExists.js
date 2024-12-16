@@ -3,7 +3,7 @@ const User = require('../../model/User');
 
 const check_playlist_exists = async (req, res, next) => {
     const { namePlaylist } = req.body;
-    const { idUser } = req.query;
+    const { idUser } = req.body;
 
     try {
         if (!idUser || !namePlaylist) {

@@ -1,6 +1,6 @@
 const validate_playlist_create = (req, res, next) => {
     const { namePlaylist } = req.body
-    const {idUser } = req.query
+    const {idUser } = req.body
     if (!namePlaylist) {
         return res.status(400).json({ message: "Vui lòng nhập tên của playlist" })
     }

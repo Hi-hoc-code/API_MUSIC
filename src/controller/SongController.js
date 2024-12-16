@@ -46,11 +46,13 @@ const getSongArtist = async (req, res) => {
         const artist = await Artist.findOne({ nameArtist });
         const songs = await Song.find({ artist: artist._id })
             .select("_id nameSong imgSong artist composer audio")
-            .populate("artist", "nameArtist imgArtist")
+            .populate("artist", "nameArtist imgArtist")  // Artist sẽ là một đối tượng
             .populate("composer", "nameComposer");
+
         if (!songs || songs.length === 0) {
             return res.status(404).json({ message: "Không tìm thấy bài hát nào với nghệ sĩ này" });
         }
+
         res.status(201).json(songs);
     } catch (error) {
         res.status(500).json({ message: "Đã xảy ra lỗi trong hệ thống" });
@@ -285,7 +287,8 @@ const getSongTrending = async (req, res) => {
             releaseYear: song.releaseYear,
             duration: song.duration,
             imgSong: song.imgSong,
-            nameSong: song.nameSong
+            nameSong: song.nameSong,
+            audio: song.audio
         }));
 
         res.status(200).json(response);
