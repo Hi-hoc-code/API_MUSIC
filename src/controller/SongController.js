@@ -303,8 +303,41 @@ const addSongFavorite = async (req, res) => {
 
 }
 const addSongPlaylist = async (req, res) => {
+    try {
+        const { idPlaylist, idSong } = req.body;
 
+        if (!idPlaylist || !idSong) {
+            return res.status(400).json({ message: "Vui lòng cung cấp idPlaylist và idSong." });
+        }
+
+        // Kiểm tra playlist
+        const playlist = await Playlist.findById(idPlaylist);
+        if (!playlist) {
+            return res.status(404).json({ message: "Không tìm thấy playlist." });
+        }
+
+        // Kiểm tra bài hát
+        const song = await Song.findById(idSong);
+        if (!song) {
+            return res.status(404).json({ message: "Không tìm thấy bài hát." });
+        }
+
+        // Kiểm tra nếu bài hát đã có trong playlist
+        if (playlist.songs.includes(idSong)) {
+            return res.status(400).json({ message: "Bài hát đã tồn tại trong playlist." });
+        }
+
+        // Thêm bài hát vào playlist
+        playlist.songs.push(idSong);
+        await playlist.save();
+
+        res.status(200).json({ message: "Thêm bài hát vào playlist thành công.", playlist });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Đã xảy ra lỗi khi thêm bài hát vào playlist." });
+    }
 };
+
 
 const getSongFavorite = async (req, res) => {
 
