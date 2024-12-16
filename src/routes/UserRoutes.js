@@ -9,6 +9,7 @@ const {
     payment,
     getAllUser,
     getUserById,
+    loginadmin,
 
 } = require("../controller/UserController");
 const router = express.Router()
@@ -24,8 +25,9 @@ router.post('/forgotPassword', forgotPassword);
 router.post('/resetPassword', resetPassword);
 router.post('/getOTP', getOTP);
 router.post('/upPremium', upPremium);
-router.post('/payment', payment);
+router.post('/payment', payment);   
 router.post('/getAllUser', getAllUser)
 router.post('/getUserById', getUserById)
+router.post('/loginadmin', loginadmin)
 
 module.exports = router

@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const { default: axios, all } = require('axios');
+const Admin = require('../model/Admin');
 require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
@@ -156,6 +157,31 @@ const payment = async (req, res) => {
 
     }
 }
+
+const loginadmin = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        if (!username || !password) {
+            return res.status(400).json({ message: 'Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.' });
+        }
+
+        const admin = await Admin.findOne({ username });
+
+        if (!admin || admin.password !== password) {
+            return res.status(401).json({ message: 'Tên đăng nhập hoặc mật khẩu không đúng.' });
+        }
+        res.status(200).json({
+            message: 'Đăng nhập thành công!',
+            admin: {
+                id: admin._id,
+                username: admin.username
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     register,
     login,
@@ -166,5 +192,6 @@ module.exports = {
     upAvatar,
     payment,
     getAllUser,
-    getUserById
+    getUserById,
+    loginadmin
 };
