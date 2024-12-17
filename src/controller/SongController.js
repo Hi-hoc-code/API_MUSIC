@@ -5,6 +5,7 @@ const Song = require('../model/Song')
 const Album = require('../model/Album')
 const mongoose = require('mongoose');
 const Playlist = require('../model/Playlist');
+const User = require('../model/User');
 
 
 const createSong = async (req, res) => {
@@ -300,8 +301,41 @@ const getSongTrending = async (req, res) => {
 }
 
 const addSongFavorite = async (req, res) => {
+    try {
+        const { idUser, idSong } = req.body; // Assuming userId and idSong are passed in the body
 
-}
+        if (!idUser || !idSong) {
+            return res.status(400).json({ message: "Vui lòng cung cấp userId và idSong." });
+        }
+
+        // Kiểm tra người dùng
+        const user = await User.findById(idUser);
+        if (!user) {
+            return res.status(404).json({ message: "Không tìm thấy người dùng." });
+        }
+
+        // Kiểm tra bài hát
+        const song = await Song.findById(idSong);
+        if (!song) {
+            return res.status(404).json({ message: "Không tìm thấy bài hát." });
+        }
+
+        // Kiểm tra nếu bài hát đã có trong danh sách yêu thích của người dùng
+        if (user.favoriteSong && user.favoriteSong.includes(idSong)) {
+            return res.status(400).json({ message: "Bài hát đã có trong danh sách yêu thích." });
+        }
+
+        // Thêm bài hát vào danh sách yêu thích của người dùng
+        user.favoriteSong.push(idSong);
+        await user.save();
+
+        res.status(200).json({ message: "Thêm bài hát vào danh sách yêu thích thành công.", user });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Đã xảy ra lỗi khi thêm bài hát vào yêu thích." });
+    }
+};
+
 const addSongPlaylist = async (req, res) => {
     try {
         const { idPlaylist, idSong } = req.body;
@@ -340,11 +374,94 @@ const addSongPlaylist = async (req, res) => {
 
 
 const getSongFavorite = async (req, res) => {
+    try {
+        const { idUser } = req.body; // Lấy id người dùng từ body request
 
-}
-const removeSongFavorite = async (req, res) => {
+        if (!idUser) {
+            return res.status(400).json({ message: "Vui lòng cung cấp idUser." });
+        }
 
+        const user = await User.findById(idUser).populate({
+            path: 'favoriteSong',
+            populate: {
+                path: 'artist',  // Populating artist để lấy thông tin nghệ sĩ
+                select: 'nameArtist' // Lấy tên nghệ sĩ (nameArtist)
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "Không tìm thấy người dùng." });
+        }
+
+        const favoriteSongs = user.favoriteSong;
+
+        if (!favoriteSongs || favoriteSongs.length === 0) {
+            return res.status(404).json({ message: "Không có bài hát yêu thích." });
+        }
+
+        const response = favoriteSongs.map(song => ({
+            idSong: song._id,
+            nameSong: song.nameSong,
+            imgSong: song.imgSong,
+            audio: song.audio,
+            artist: song.artist.length > 0 ? song.artist[0].nameArtist : "N/A" // Lấy tên nghệ sĩ
+        }));
+
+        res.status(200).json({ favoriteSongs: response });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Đã xảy ra lỗi khi lấy danh sách bài hát yêu thích." });
+    }
 };
+
+const removeSongFavorite = async (req, res) => {
+    try {
+        const { idUser, idSong } = req.body;
+
+        if (!idUser || !idSong) {
+            return res.status(400).json({ message: "Vui lòng cung cấp idUser và idSong." });
+        }
+
+        const user = await User.findById(idUser);
+        if (!user) {
+            return res.status(404).json({ message: "Không tìm thấy người dùng." });
+        }
+
+        const song = await Song.findById(idSong);
+        if (!song) {
+            return res.status(404).json({ message: "Không tìm thấy bài hát." });
+        }
+
+        if (!user.favoriteSong.includes(idSong)) {
+            return res.status(400).json({ message: "Bài hát này không có trong danh sách yêu thích của người dùng." });
+        }
+
+        user.favoriteSong = user.favoriteSong.filter(songId => !songId.equals(idSong));
+        await user.save();
+
+        res.status(200).json({ message: "Đã xóa bài hát khỏi danh sách yêu thích.", user });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Đã xảy ra lỗi khi xóa bài hát khỏi danh sách yêu thích." });
+    }
+};
+const checkFavoriteUser = async (req, res) => {
+    try {
+        const { idUser, idSong } = req.body;
+        if (!idUser || !idSong) {
+            return res.status(400).json({ message: "Vui lòng cung cấp idUser và idSong." });
+        }
+        const user = await User.findById(idUser);
+        if (!user) {
+            return res.status(404).json({ message: "Không tìm thấy người dùng." });
+        }
+        const isFavorite = user.favoriteSong.includes(idSong);
+        res.status(200).json({ isFavorite });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Đã xảy ra lỗi khi kiểm tra bài hát yêu thích." });
+    }
+}
 
 module.exports = {
     createSong,
@@ -363,5 +480,6 @@ module.exports = {
     getSongFavorite,
     removeSongFavorite,
     addSongFavorite,
-    addSongPlaylist
+    addSongPlaylist,
+    checkFavoriteUser
 };

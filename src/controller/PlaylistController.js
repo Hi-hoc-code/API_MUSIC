@@ -41,11 +41,19 @@ const getPlaylistById = async (req, res) => {
         if (!idPlaylist) {
             return res.status(400).json({ message: "Lỗi khi lấy playlist" })
         }
-        const playlist = await Playlist.findById(idPlaylist)
+        const playlist = await Playlist.findById(idPlaylist).populate({
+            path: 'songs',
+            select: 'nameSong imgSong audio _id artist',
+            populate: {
+                path: 'artist',
+                select: 'nameArtist'
+            }
+        });
+
         console.log(playlist)
         res.status(200).json(playlist)
     } catch (error) {
-        res.status(400).json({ message: "Lỗi khi lấy playlist" })
+        res.status(400).json({ message: "Lỗi khi lấy playlist", error })
     }
 }
 const updatePlaylist = async (req, res) => {
