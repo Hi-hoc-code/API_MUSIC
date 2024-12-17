@@ -157,6 +157,35 @@ const payment = async (req, res) => {
 
     }
 }
+const updateUserInfo = async (req, res) => {
+    try {
+        const { idUser, ...fieldsToUpdate } = req.body; // Lấy idUser và các trường còn lại từ req.body
+
+        // Tìm kiếm người dùng dựa trên ID
+        const user = await User.findById(idUser);
+        if (!user) {
+            return res.status(404).json({ message: "Người dùng không tồn tại!" });
+        }
+
+        // Lặp qua từng trường và cập nhật thông tin
+        Object.keys(fieldsToUpdate).forEach((key) => {
+            if (fieldsToUpdate[key] !== undefined) {
+                user[key] = fieldsToUpdate[key];
+            }
+        });
+
+        // Lưu thay đổi vào cơ sở dữ liệu
+        await user.save();
+
+        res.status(200).json({
+            message: "Thông tin người dùng đã được cập nhật thành công!",
+            user,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Đã xảy ra lỗi khi cập nhật thông tin người dùng." });
+    }
+};
 
 const loginadmin = async (req, res) => {
     try {
@@ -193,5 +222,6 @@ module.exports = {
     payment,
     getAllUser,
     getUserById,
-    loginadmin
+    loginadmin,
+    updateUserInfo
 };

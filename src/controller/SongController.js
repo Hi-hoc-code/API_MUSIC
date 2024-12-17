@@ -372,6 +372,42 @@ const addSongPlaylist = async (req, res) => {
     }
 };
 
+const removeSongPlaylist = async (req, res) => {
+    try {
+        const { idPlaylist, idSong } = req.body;
+
+        if (!idPlaylist || !idSong) {
+            return res.status(400).json({ message: "Vui lòng cung cấp idPlaylist và idSong." });
+        }
+
+        // Kiểm tra playlist
+        const playlist = await Playlist.findById(idPlaylist);
+        if (!playlist) {
+            return res.status(404).json({ message: "Không tìm thấy playlist." });
+        }
+
+        // Kiểm tra bài hát
+        const song = await Song.findById(idSong);
+        if (!song) {
+            return res.status(404).json({ message: "Không tìm thấy bài hát." });
+        }
+
+        // Kiểm tra nếu bài hát không có trong playlist
+        if (!playlist.songs.includes(idSong)) {
+            return res.status(400).json({ message: "Bài hát không tồn tại trong playlist." });
+        }
+
+        // Xóa bài hát khỏi playlist
+        playlist.songs = playlist.songs.filter((songId) => songId.toString() !== idSong);
+        await playlist.save();
+
+        res.status(200).json({ message: "Xóa bài hát khỏi playlist thành công.", playlist });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Đã xảy ra lỗi khi xóa bài hát khỏi playlist." });
+    }
+};
+
 
 const getSongFavorite = async (req, res) => {
     try {
@@ -481,5 +517,6 @@ module.exports = {
     removeSongFavorite,
     addSongFavorite,
     addSongPlaylist,
-    checkFavoriteUser
+    checkFavoriteUser,
+    removeSongPlaylist
 };

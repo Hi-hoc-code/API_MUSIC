@@ -10,6 +10,7 @@ const {
     getAllUser,
     getUserById,
     loginadmin,
+    updateUserInfo,
 
 } = require("../controller/UserController");
 const router = express.Router()
@@ -29,5 +30,6 @@ router.post('/payment', payment);
 router.post('/getAllUser', getAllUser)
 router.post('/getUserById', getUserById)
 router.post('/loginadmin', loginadmin)
+router.post('/updateUserInfo',updateUserInfo)
 
 module.exports = router
