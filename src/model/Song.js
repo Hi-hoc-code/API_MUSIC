@@ -5,6 +5,7 @@ const Song = new Schema({
     nameSong: { type: String, default: '' },
     imgSong: { type: String, default: '' },
     audio: { type: String, default: '' },
+    lyrics: { type: String, default: '' }, // Thêm trường lyrics
     artist: [{ type: Schema.Types.ObjectId, ref: 'Artist', default: [] }],
     composer: [{ type: Schema.Types.ObjectId, ref: 'Composer', default: [] }],
     genre: [{ type: Schema.Types.ObjectId, ref: 'Genre', default: [] }],

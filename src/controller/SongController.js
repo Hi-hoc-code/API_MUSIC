@@ -40,7 +40,32 @@ const createSong = async (req, res) => {
     }
 }
 
+const getSongByName = async (req, res) => {
+    try {
+        const { nameSong } = req.body; // Lấy tên bài hát từ body request
 
+        if (!nameSong) {
+            return res.status(400).json({ message: "Vui lòng cung cấp tên bài hát." });
+        }
+
+        // Tìm bài hát theo tên bài hát
+        const song = await Song.findOne({ nameSong: { $regex: nameSong, $options: "i" } })
+            .populate({ path: 'artist', select: 'nameArtist' })
+            .populate({ path: 'album', select: 'nameAlbum' })
+            .populate({ path: 'genre', select: 'nameGenre' })
+            .populate({ path: 'composer', select: 'nameComposer' });
+
+        if (!song) {
+            return res.status(404).json({ message: "Không tìm thấy bài hát với tên này." });
+        }
+
+        // Trả về thông tin bài hát
+        res.status(200).json({ song });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Đã xảy ra lỗi khi tìm bài hát." });
+    }
+};
 
 const getSongArtist = async (req, res) => {
     try {
@@ -518,5 +543,6 @@ module.exports = {
     addSongFavorite,
     addSongPlaylist,
     checkFavoriteUser,
-    removeSongPlaylist
+    removeSongPlaylist,
+    getSongByName
 };

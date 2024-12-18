@@ -19,6 +19,7 @@ const {
     validate_user_login
 } = require("../middleware/checkValidate/UserValidate");
 const { check_user_exists } = require("../middleware/checkExists/UserExists");
+const { getSongByName } = require("../controller/SongController");
 
 router.post('/register', validate_user_register, check_user_exists, register);
 router.post('/login', validate_user_login, login);
@@ -26,10 +27,11 @@ router.post('/forgotPassword', forgotPassword);
 router.post('/resetPassword', resetPassword);
 router.post('/getOTP', getOTP);
 router.post('/upPremium', upPremium);
-router.post('/payment', payment);   
+router.post('/payment', payment);
 router.post('/getAllUser', getAllUser)
 router.post('/getUserById', getUserById)
 router.post('/loginadmin', loginadmin)
-router.post('/updateUserInfo',updateUserInfo)
+router.post('/updateUserInfo', updateUserInfo)
+router.post('/getSongByName', getSongByName)
 
 module.exports = router
